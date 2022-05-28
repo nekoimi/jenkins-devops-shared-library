@@ -6,10 +6,23 @@ package com.yoyohr
  */
 
 /**
+ * 列出文件
+ * @param path
+ */
+def lsFile(GString path = "") {
+    println("ls ${path}:")
+    sh """
+ls -l ${path}
+"""
+}
+
+/**
  * 删除文件
  * @param path
  */
 def rmFile(GString path) {
-//    log = new logger()
-//    log.debug()
+    echo "rm ${path}"
+    sh """
+rm -rf ${path}
+"""
 }
