@@ -13,35 +13,25 @@ def call(gitUrl) {
     // def project = readYaml file: "project.yaml"
     def util = new utils()
 
-    pipeline {
-        agent any
-        environment {
-        }
-
-        stages {
-
-            // 加载配置参数
-            stage('LoadEnv') {
-                println("""
+    // 加载配置参数
+    stage('LoadEnv') {
+        println("""
 Workspace: ${workspace}
 Repository: ${gitUrl}"
 Git Tag: ${gitTag}
 """)
-            }
+    }
 
-            stage('Checkout') {
-                println("checkout")
-                util.lsFile()
-            }
+    stage('Checkout') {
+        println("checkout")
+        util.lsFile()
+    }
 
-            stage('Build') {
-                println("build")
-            }
+    stage('Build') {
+        println("build")
+    }
 
-            stage('Deploy') {
-                println("deploy")
-            }
-
-        }
+    stage('Deploy') {
+        println("deploy")
     }
 }
