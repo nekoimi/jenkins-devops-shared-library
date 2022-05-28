@@ -21,7 +21,7 @@ ls -l ${path}
  * @param path
  */
 def fileExists(path) {
-    def files = findFiles("${path}")
+    def files = findFiles(glob: "${path}")
     if (null != files && files.length >= 1) {
         echo "Exists: ${path}"
         return true
