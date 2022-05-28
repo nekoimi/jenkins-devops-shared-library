@@ -25,8 +25,8 @@ def call() {
         // Pull
 //        gitplus.pullTag(gitUrl, gitTag)
         util.lsFile()
-//        def project = readYaml file: "project.yaml"
-//        println(project)
+        def project = readYaml file: "project.yaml"
+        println(project)
     }
 
     stage('Build') {
