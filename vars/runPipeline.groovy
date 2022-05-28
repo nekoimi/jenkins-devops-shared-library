@@ -25,7 +25,7 @@ def call(gitUrl = "", gitBranch = "") {
 
     stage('LoadEnv') {
         util.lsFile()
-        if (fileExists projectYaml) {
+        if (util.fileExists(projectYaml)) {
             project = readYaml file: "project.yaml"
             loadProjectYaml = true
         } else {
@@ -43,7 +43,7 @@ Project Config: ${project}
     if (!loadProjectYaml) {
         stage('Build') {
             // 走 deploy.sh
-            if (fileExists defaultDeployScript) {
+            if (util.fileExists(defaultDeployScript)) {
                 sh "bash -ex deploy.sh test ${env.CODEBASE} ${env.JOB_NAME}"
             } else {
                 echo "Default deploy.sh file does not exist!"
