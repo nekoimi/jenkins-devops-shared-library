@@ -1,6 +1,6 @@
 #!/usr/bin/groovy
-import com.yoyohr.gitplus
 import com.yoyohr.utils
+import com.yoyohr.deployEnv
 
 /**
  * <p>build</p>
@@ -9,21 +9,34 @@ import com.yoyohr.utils
  */
 
 def call(gitUrl = "", gitBranch = "") {
+    // jenkins上devops的git账号凭据ID
+    def gitDevOpsId = "5a8151d1-6d6b-4160-8f32-122a9e9a74ba"
     def workspace = "$env.workspace/"
+    def jobName = "${env.JOB_NAME}"
+    def buildId = "${env.BUILD_ID}"
     def defaultDeployScript = workspace + "deploy.sh"
     def projectYaml = workspace + "project.yaml"
     def util = new utils()
-    def gitPlus = new gitplus()
+    def buildEnv = "$params.buildEnv"
+
+    environment {
+        FOO = "你当像鸟飞往你的山"
+        NAME = "Tan"
+    }
 
     stage('Checkout') {
         if (gitUrl == "" && gitBranch == "") {
             checkout scm
         } else {
-            gitPlus.pullBranch(gitUrl, gitBranch)
+            git changelog: true,
+                    branch: gitBranch,
+                    credentialsId: gitDevOpsId,
+                    url: gitUrl
         }
     }
 
     stage('LoadEnv') {
+        sh "printenv"
         util.lsFile()
         if (util.fileExists(projectYaml)) {
             project = readYaml file: "project.yaml"
@@ -44,18 +57,22 @@ Project Config: ${project}
         stage('Build') {
             // 走 deploy.sh
             if (util.fileExists(defaultDeployScript)) {
-                sh "bash -ex deploy.sh test ${env.CODEBASE} ${env.JOB_NAME}"
+                sh "bash -ex deploy.sh ${buildEnv} ${env.CODEBASE} ${env.JOB_NAME}"
             } else {
                 echo "Default deploy.sh file does not exist!"
             }
         }
     }
 
-
+    // 读取项目目录下 project.yaml
+    // 解析 yaml 配置
+    // 决定后续CI/CD流程
     else {
         stage('Build') {
             println(project)
             println("build")
+
+            sh "bash -ex test.sh"
         }
 
         stage('Deploy') {
