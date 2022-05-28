@@ -13,5 +13,5 @@ package com.yoyohr
  * @return
  */
 def pullTag(repositoryUrl, gitTag) {
-    git branch: gitTag, url: repositoryUrl
+    git tag: gitTag, url: repositoryUrl
 }
