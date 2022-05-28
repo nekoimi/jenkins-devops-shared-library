@@ -12,14 +12,13 @@ def call(gitUrl) {
     def gitTag = "${params.tag}"
 
     stage('LoadEnv') {
-        util.lsFile()
         println("loadenv")
         println(gitTag)
     }
 
     stage('Checkout') {
         println("checkout")
-        println(gitTag)
+        util.lsFile()
     }
 
     stage('Build') {

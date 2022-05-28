@@ -10,7 +10,7 @@ package com.yoyohr
  * @param path
  */
 def lsFile(path = "") {
-    println("ls ${path}:")
+    echo "ls ${path}:"
     sh """
 ls -l ${path}
 """
