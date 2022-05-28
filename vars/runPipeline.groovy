@@ -17,7 +17,7 @@ def call(gitUrl = "", gitBranch = "") {
     def defaultDeployScript = workspace + "deploy.sh"
     def projectYaml = workspace + "project.yaml"
     def util = new utils()
-    def BUILD_ENV = "$params.buildEnv"
+    def buildEnv = "$params.BUILD_ENV"
 
     stage('Checkout') {
         if (gitUrl == "" && gitBranch == "") {
