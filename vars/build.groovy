@@ -7,7 +7,7 @@ import com.yoyohr.utils
  * @author nekoimi 2022/05/28
  */
 
-def call(GString gitUrl) {
+def call(gitUrl) {
     def util = new utils()
     def gitTag = "${params.tag}"
 

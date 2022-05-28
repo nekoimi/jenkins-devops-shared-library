@@ -9,7 +9,7 @@ package com.yoyohr
  * 列出文件
  * @param path
  */
-def lsFile(GString path = "") {
+def lsFile(path = "") {
     println("ls ${path}:")
     sh """
 ls -l ${path}
@@ -20,7 +20,7 @@ ls -l ${path}
  * 删除文件
  * @param path
  */
-def rmFile(GString path) {
+def rmFile(path) {
     echo "rm ${path}"
     sh """
 rm -rf ${path}
