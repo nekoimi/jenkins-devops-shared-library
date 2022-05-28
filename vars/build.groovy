@@ -6,5 +6,6 @@
  */
 
 def call() {
+    println("fdsfsdfsdfdsf")
     println("${param.tag}")
 }
