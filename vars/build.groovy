@@ -6,7 +6,7 @@
  */
 
 def call() {
-    def gitTag = ${params.tag}
+    def gitTag = "${params.tag}"
 
     stage('Checkout') {
         println("checkout")
