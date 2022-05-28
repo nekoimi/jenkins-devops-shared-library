@@ -6,6 +6,18 @@
  */
 
 def call() {
-    println("fdsfsdfsdfdsf")
-    println("${param.tag}")
+    println("$params.tag")
+
+    stage('Checkout') {
+        println("checkout")
+        println("$params.tag")
+    }
+
+    stage('Build') {
+        println("build")
+    }
+
+    stage('Deploy') {
+        println("deploy")
+    }
 }
