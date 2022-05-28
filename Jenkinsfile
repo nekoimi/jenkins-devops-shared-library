@@ -2,6 +2,6 @@
 
 node {
     stage('Checkout') {
-        sh 'ls'
+        echo 'hello world'
     }
 }
