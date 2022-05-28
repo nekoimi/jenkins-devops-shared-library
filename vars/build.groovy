@@ -11,9 +11,11 @@ def call(gitUrl) {
     def util = new utils()
     def gitTag = "${params.tag}"
 
+    // 加载配置参数
     stage('LoadEnv') {
-        println("loadenv")
-        println(gitTag)
+        echo "Load env ......"
+        echo "Current Repository: ${gitUrl}"
+        echo "Current Git Tag: ${gitTag}"
     }
 
     stage('Checkout') {

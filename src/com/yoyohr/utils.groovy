@@ -10,7 +10,7 @@ package com.yoyohr
  * @param path
  */
 def lsFile(path = "") {
-    echo "ls ${path}:"
+    echo "Ls ${path}:"
     sh """
 ls -l ${path}
 """
@@ -21,7 +21,7 @@ ls -l ${path}
  * @param path
  */
 def rmFile(path) {
-    echo "rm ${path}"
+    echo "Rm ${path}"
     sh """
 rm -rf ${path}
 """
