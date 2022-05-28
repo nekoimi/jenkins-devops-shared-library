@@ -11,7 +11,7 @@ import com.yoyohr.utils
 def call(gitUrl) {
     def gitTag = "${params.tag}"
     def workspace = "$env.workspace/"
-    // def project = readYaml file: "project.yaml"
+    def project = readYaml file: "project.yaml"
     def util = new utils()
     def gitplus = new gitplus();
 
@@ -27,8 +27,9 @@ Git Tag: ${gitTag}
     stage('Checkout') {
         // Pull
 //        gitplus.pullTag(gitUrl, gitTag)
-
         util.lsFile()
+
+        println(project)
     }
 
     stage('Build') {
