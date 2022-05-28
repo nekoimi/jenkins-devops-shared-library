@@ -8,27 +8,40 @@ import com.yoyohr.utils
  */
 
 def call(gitUrl) {
-    def util = new utils()
     def gitTag = "${params.tag}"
+    def workspace = "$env.workspace"
+    // def project = readYaml file: "project.yaml"
+    def util = new utils()
 
-    // 加载配置参数
-    stage('LoadEnv') {
-        println("""
-Current Repository: ${gitUrl}"
-Current Git Tag: ${gitTag}
+    pipeline {
+        agent any
+        environment {
+        }
+
+        stages {
+
+            // 加载配置参数
+            stage('LoadEnv') {
+                println("""
+Workspace: ${workspace}
+Repository: ${gitUrl}"
+Git Tag: ${gitTag}
 """)
-    }
+            }
 
-    stage('Checkout') {
-        println("checkout")
-        util.lsFile()
-    }
+            stage('Checkout') {
+                println("checkout")
+                util.lsFile()
+            }
 
-    stage('Build') {
-        println("build")
-    }
+            stage('Build') {
+                println("build")
+            }
 
-    stage('Deploy') {
-        println("deploy")
+            stage('Deploy') {
+                println("deploy")
+            }
+
+        }
     }
 }
