@@ -8,19 +8,7 @@ import com.yoyohr.utils
  * @author nekoimi 2022/05/28
  */
 
-def call(gitUrl) {
-    parameters {
-        gitParameter name: 'tag',
-                type: 'PT_TAG',
-                branchFilter: 'origin/(.*)',
-                description: '标签名称',
-                quickFilterEnabled: false,
-                selectedValue: 'TOP',
-                sortMode: 'DESCENDING_SMART',
-                tagFilter: '*',
-                defaultValue: ''
-    }
-
+def call() {
     def gitTag = "${params.tag}"
     def workspace = "$env.workspace/"
     def util = new utils()
@@ -28,11 +16,9 @@ def call(gitUrl) {
 
     // 加载配置参数
     stage('LoadEnv') {
-        println("""
-Workspace: ${workspace}
-Repository: ${gitUrl}"
-Git Tag: ${gitTag}
-""")
+//        println("""
+//Workspace: ${workspace}
+//""")
     }
 
     stage('Checkout') {
