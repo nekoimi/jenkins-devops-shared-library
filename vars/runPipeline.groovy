@@ -26,7 +26,7 @@ def call(gitUrl = "", gitBranch = "") {
     stage('LoadEnv') {
         util.lsFile()
         if (util.fileExists(projectYaml)) {
-            project = readYaml file: projectYaml
+            project = readYaml file: "${projectYaml}"
             loadProjectYaml = true
         } else {
             project = "load fail!"
