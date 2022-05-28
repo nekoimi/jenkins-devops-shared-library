@@ -1,4 +1,5 @@
 #!/usr/bin/groovy
+import com.yoyohr.git
 import com.yoyohr.utils
 
 /**
@@ -9,9 +10,10 @@ import com.yoyohr.utils
 
 def call(gitUrl) {
     def gitTag = "${params.tag}"
-    def workspace = "$env.workspace"
+    def workspace = "$env.workspace/"
     // def project = readYaml file: "project.yaml"
     def util = new utils()
+    def git = new git();
 
     // 加载配置参数
     stage('LoadEnv') {
@@ -23,7 +25,9 @@ Git Tag: ${gitTag}
     }
 
     stage('Checkout') {
-        println("checkout")
+        // Pull
+        git.pullByTag(gitUrl, gitTag)
+
         util.lsFile()
     }
 
