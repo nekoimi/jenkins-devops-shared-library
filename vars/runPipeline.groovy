@@ -22,6 +22,7 @@ def call() {
     }
 
     stage('Checkout') {
+        checkout scm
         // Pull
 //        gitplus.pullTag(gitUrl, gitTag)
         util.lsFile()
