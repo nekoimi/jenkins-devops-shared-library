@@ -17,20 +17,20 @@ def gitDevOpsId() {
 
 /**
  * 拉取指定Tag的代码
- * @param repositoryUrl
+ * @param gitUrl
  * @param gitTag
  * @return
  */
-def pullTag(repositoryUrl, gitTag) {
-    git changelog: true, branch: gitTag, credentialsId: gitDevOpsId(), url: repositoryUrl
+def pullTag(gitUrl, gitTag) {
+    git changelog: true, branch: gitTag, credentialsId: gitDevOpsId(), url: gitUrl
 }
 
 /**
  * 拉取指定分支代码
- * @param repositoryUrl
+ * @param gitUrl
  * @param gitBranch
  * @return
  */
-def pullBranch(repositoryUrl, gitBranch) {
-    git changelog: true, branch: gitBranch, credentialsId: gitDevOpsId(), url: repositoryUrl
+def pullBranch(gitUrl, gitBranch) {
+    git changelog: true, branch: gitBranch, credentialsId: gitDevOpsId(), url: gitUrl
 }

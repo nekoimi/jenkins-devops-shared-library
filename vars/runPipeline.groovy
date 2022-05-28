@@ -8,32 +8,58 @@ import com.yoyohr.utils
  * @author nekoimi 2022/05/28
  */
 
-def call() {
-    def gitTag = "${params.tag}"
+def call(gitUrl = "", gitBranch = "") {
     def workspace = "$env.workspace/"
+    def defaultDeployScript = workspace + "deploy.sh"
+    def projectYaml = workspace + "project.yaml"
     def util = new utils()
+    def gitPlus = new gitplus()
 
-    // 加载配置参数
+    stage('Checkout') {
+        if (gitUrl == "" && gitBranch == "") {
+            checkout scm
+        } else {
+            gitPlus.pullBranch(gitUrl, gitBranch)
+        }
+    }
+
     stage('LoadEnv') {
+        util.lsFile()
+        if (util.fileExists(projectYaml)) {
+            project = readYaml file: projectYaml
+            loadProjectYaml = true
+        } else {
+            project = "load fail!"
+            loadProjectYaml = false
+        }
         println("""
 Workspace: ${workspace}
+Project.yaml: ${projectYaml}
+Load Project Config: ${loadProjectYaml}
+Project Config: ${project}
 """)
     }
 
-    stage('Checkout') {
-        checkout scm
-        // Pull
-//        gitplus.pullTag(gitUrl, gitTag)
-        util.lsFile()
-        project = readYaml file: "project.yaml"
+    if (!loadProjectYaml) {
+        stage('Build') {
+            // 走 deploy.sh
+            if (util.fileExists(defaultDeployScript)) {
+                sh "bash -ex deploy.sh test ${env.CODEBASE} ${env.JOB_NAME}"
+            } else {
+                echo "Default deploy.sh file does not exist!"
+            }
+        }
     }
 
-    stage('Build') {
-        println(project)
-        println("build")
-    }
 
-    stage('Deploy') {
-        println("deploy")
+    else {
+        stage('Build') {
+            println(project)
+            println("build")
+        }
+
+        stage('Deploy') {
+            println("deploy")
+        }
     }
 }

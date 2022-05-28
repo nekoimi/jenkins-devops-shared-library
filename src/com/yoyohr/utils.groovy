@@ -17,6 +17,20 @@ ls -l ${path}
 }
 
 /**
+ * 文件是否存在
+ * @param path
+ */
+def fileExists(path) {
+    def files = findFiles(glob: "${path}")
+    if (null != files && files.length >= 1) {
+        echo "Exists: ${path}"
+        return true
+    }
+    echo "Not Exists: ${path}"
+    return false
+}
+
+/**
  * 删除文件
  * @param path
  */
