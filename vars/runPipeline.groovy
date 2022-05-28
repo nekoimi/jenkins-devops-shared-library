@@ -12,13 +12,12 @@ def call() {
     def gitTag = "${params.tag}"
     def workspace = "$env.workspace/"
     def util = new utils()
-    def gitplus = new gitplus();
 
     // 加载配置参数
     stage('LoadEnv') {
-//        println("""
-//Workspace: ${workspace}
-//""")
+        println("""
+Workspace: ${workspace}
+""")
     }
 
     stage('Checkout') {
@@ -26,11 +25,11 @@ def call() {
         // Pull
 //        gitplus.pullTag(gitUrl, gitTag)
         util.lsFile()
-        def project = readYaml file: "project.yaml"
-        println(project)
+        project = readYaml file: "project.yaml"
     }
 
     stage('Build') {
+        println(project)
         println("build")
     }
 
