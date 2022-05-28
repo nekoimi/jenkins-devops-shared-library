@@ -1,5 +1,5 @@
 #!/usr/bin/groovy
-import com.yoyohr.git
+import com.yoyohr.gitplus
 import com.yoyohr.utils
 
 /**
@@ -13,7 +13,7 @@ def call(gitUrl) {
     def workspace = "$env.workspace/"
     // def project = readYaml file: "project.yaml"
     def util = new utils()
-    def git = new git();
+    def gitplus = new gitplus();
 
     // 加载配置参数
     stage('LoadEnv') {
@@ -26,7 +26,7 @@ Git Tag: ${gitTag}
 
     stage('Checkout') {
         // Pull
-        git.pullByTag(gitUrl, gitTag)
+        gitplus.pullTag(gitUrl, gitTag)
 
         util.lsFile()
     }

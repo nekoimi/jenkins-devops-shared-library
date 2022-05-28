@@ -12,6 +12,6 @@ package com.yoyohr
  * @param gitTag
  * @return
  */
-def pullByTag(repositoryUrl, gitTag) {
-    git branch: gitTag url: repositoryUrl
+def pullTag(repositoryUrl, gitTag) {
+    git branch: gitTag, url: repositoryUrl
 }
