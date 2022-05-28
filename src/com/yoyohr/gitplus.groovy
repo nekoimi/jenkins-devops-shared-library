@@ -22,7 +22,7 @@ def gitDevOpsId() {
  * @return
  */
 def pullTag(repositoryUrl, gitTag) {
-    git tag: gitTag, credentialsId: gitDevOpsId(), url: repositoryUrl
+    git changelog: true, branch: gitTag, credentialsId: gitDevOpsId(), url: repositoryUrl
 }
 
 /**
@@ -32,5 +32,5 @@ def pullTag(repositoryUrl, gitTag) {
  * @return
  */
 def pullBranch(repositoryUrl, gitBranch) {
-    git branch: gitBranch, credentialsId: gitDevOpsId(), url: repositoryUrl
+    git changelog: true, branch: gitBranch, credentialsId: gitDevOpsId(), url: repositoryUrl
 }

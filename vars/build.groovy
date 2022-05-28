@@ -26,7 +26,7 @@ Git Tag: ${gitTag}
 
     stage('Checkout') {
         // Pull
-        gitplus.pullTag(gitUrl, gitTag)
+//        gitplus.pullTag(gitUrl, gitTag)
 
         util.lsFile()
     }
