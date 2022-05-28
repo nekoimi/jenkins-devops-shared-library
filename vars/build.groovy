@@ -9,6 +9,18 @@ import com.yoyohr.utils
  */
 
 def call(gitUrl) {
+    parameters {
+        gitParameter name: 'tag',
+                type: 'PT_TAG',
+                branchFilter: 'origin/(.*)',
+                description: '标签名称',
+                quickFilterEnabled: false,
+                selectedValue: 'TOP',
+                sortMode: 'DESCENDING_SMART',
+                tagFilter: '*',
+                defaultValue: ''
+    }
+
     def gitTag = "${params.tag}"
     def workspace = "$env.workspace/"
     def util = new utils()
