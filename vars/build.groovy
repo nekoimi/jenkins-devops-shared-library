@@ -14,8 +14,7 @@ def call(gitUrl) {
     // 加载配置参数
     stage('LoadEnv') {
         println("""
-Load env ...... \n
-Current Repository: ${gitUrl}" \n
+Current Repository: ${gitUrl}"
 Current Git Tag: ${gitTag}
 """)
     }
