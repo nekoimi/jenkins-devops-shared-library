@@ -7,11 +7,21 @@ package com.yoyohr
  */
 
 /**
- * 下载指定Tag的代码
+ * 拉取指定Tag的代码
  * @param repositoryUrl
  * @param gitTag
  * @return
  */
 def pullTag(repositoryUrl, gitTag) {
-    git tag: gitTag, url: repositoryUrl
+    git tag: gitTag, credentialsId: 'devops', url: repositoryUrl
+}
+
+/**
+ * 拉取指定分支代码
+ * @param repositoryUrl
+ * @param gitBranch
+ * @return
+ */
+def pullBranch(repositoryUrl, gitBranch) {
+    git branch: gitBranch, credentialsId: 'devops', url: repositoryUrl
 }
