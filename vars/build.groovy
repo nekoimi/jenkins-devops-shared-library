@@ -13,9 +13,9 @@ def call(gitUrl) {
 
     // 加载配置参数
     stage('LoadEnv') {
-        echo "Load env ......"
-        echo "Current Repository: ${gitUrl}"
-        echo "Current Git Tag: ${gitTag}"
+        println("Load env ......")
+        println("Current Repository: ${gitUrl}")
+        println("Current Git Tag: ${gitTag}")
     }
 
     stage('Checkout') {
