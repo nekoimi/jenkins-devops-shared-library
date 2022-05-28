@@ -17,12 +17,7 @@ def call(gitUrl = "", gitBranch = "") {
     def defaultDeployScript = workspace + "deploy.sh"
     def projectYaml = workspace + "project.yaml"
     def util = new utils()
-    def buildEnv = "$params.buildEnv"
-
-    environment {
-        FOO = "你当像鸟飞往你的山"
-        NAME = "Tan"
-    }
+    def BUILD_ENV = "$params.buildEnv"
 
     stage('Checkout') {
         if (gitUrl == "" && gitBranch == "") {
@@ -36,7 +31,6 @@ def call(gitUrl = "", gitBranch = "") {
     }
 
     stage('LoadEnv') {
-        sh "printenv"
         util.lsFile()
         if (util.fileExists(projectYaml)) {
             project = readYaml file: "project.yaml"
@@ -57,7 +51,7 @@ Project Config: ${project}
         stage('Build') {
             // 走 deploy.sh
             if (util.fileExists(defaultDeployScript)) {
-                sh "bash -ex deploy.sh ${buildEnv} ${env.CODEBASE} ${env.JOB_NAME}"
+                sh "bash -ex deploy.sh"
             } else {
                 echo "Default deploy.sh file does not exist!"
             }
