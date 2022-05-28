@@ -6,11 +6,11 @@
  */
 
 def call() {
-    println("$params.tag")
+    def gitTag = ${params.tag}
 
     stage('Checkout') {
         println("checkout")
-        println("$params.tag")
+        println(gitTag)
     }
 
     stage('Build') {
