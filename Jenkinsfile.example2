@@ -1,5 +1,0 @@
-#!groovy
-
-node {
-    runPipeline url: '', barch: ''
-}
