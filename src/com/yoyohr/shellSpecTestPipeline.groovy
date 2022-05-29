@@ -6,28 +6,28 @@ package com.yoyohr
  */
 
 def build() {
-    noticeWarning("""
+    notice('Build Warning', """
 Warning！当前项目 project.yaml 配置文件不存在，请使用 Hook 完成 Build 流程。
 Hook 使用参见：http://code-base.yoyohr.com/kubernetes/no-jenkinsfile
 """)
 }
 
 def dockerImage() {
-    noticeWarning("""
+    notice('Docker Image Warning', """
 Warning！当前项目 project.yaml 配置文件不存在，请使用 Hook 完成 DockerImage 流程。
 Hook 使用参见：http://code-base.yoyohr.com/kubernetes/no-jenkinsfile
 """)
 }
 
 def dockerPush() {
-    noticeWarning("""
+    notice('Docker Push Warning', """
 Warning！当前项目 project.yaml 配置文件不存在，请使用 Hook 完成 dockerPush 流程。
 Hook 使用参见：http://code-base.yoyohr.com/kubernetes/no-jenkinsfile
 """)
 }
 
 def deploy() {
-    noticeWarning("""
+    notice('Deploy Warning', """
 Warning！当前项目 project.yaml 配置文件不存在，请使用 Hook 完成 deploy 流程。
 Hook 使用参见：http://code-base.yoyohr.com/kubernetes/no-jenkinsfile
 """)
