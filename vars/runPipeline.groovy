@@ -17,7 +17,7 @@ def call(url = "", barch = "") {
     def factory = new PipelineFactory()
 
     stage('LoadEnv') {
-        invokeMethod("echo", "aaa")
+        invokeMethod("noticeWarning", "aaa")
 
         def exists = fileExists projectYaml
         def pipeline = null
