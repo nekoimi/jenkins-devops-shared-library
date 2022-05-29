@@ -68,11 +68,7 @@ def call(url = "", barch = "") {
 def doRunPipeline(yamlConf, buildEnv) {
     def group = "${GroupShell}"
     if (yamlConf != null) {
-        def r = dataGet(yamlConf, "pipeline")
-        echo "R: ${r}"
-        def r2 = dataGet(yamlConf, "pipeline_hook.build_before")
-        echo "R2: ${r2}"
-        group = yamlConf.get("pipeline")
+        group = dataGet(yamlConf, "pipeline")
     }
     echo "${group}-${buildEnv}"
     def pipeline = null

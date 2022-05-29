@@ -6,47 +6,65 @@ package com.yoyohr
  */
 
 def build(yamlConf) {
-    def build_before = dataGet(yamlConf, "pipeline_hook.build_before")
-    def build_after = dataGet(yamlConf, "pipeline_hook.build_after")
-    if (build_before == null || build_after == null) {
-        notice('Build Warning', """
-Warning！当前项目 project.yaml 配置文件不存在，请使用 Hook 完成 Build 流程。
-Hook 使用参见：http://code-base.yoyohr.com/kubernetes/no-jenkinsfile
-""")
+    def hook_before = dataGet(yamlConf, "pipeline_hook.build_before")
+    def hook_after = dataGet(yamlConf, "pipeline_hook.build_after")
+    if (hook_before == null || hook_after == null) {
+        notice('Build Warning', "Warning！请使用 Hook 完成 Build 流程。如不需要，请忽略此警告。")
     } else {
-        if (build_before != null) {
-            sh """
-bash -ex
-${build_before}
-"""
+        if (hook_before != null) {
+            sh """bash -ex ${hook_before}"""
         }
 
-        if (build_after != null) {
-            sh """
-bash -ex
-${build_after}
-"""
+        if (hook_after != null) {
+            sh """bash -ex ${hook_after}"""
         }
     }
 }
 
 def dockerImage(yamlConf) {
-    notice('Docker Image Warning', """
-Warning！当前项目 project.yaml 配置文件不存在，请使用 Hook 完成 DockerImage 流程。
-Hook 使用参见：http://code-base.yoyohr.com/kubernetes/no-jenkinsfile
-""")
+    def hook_before = dataGet(yamlConf, "pipeline_hook.docker_image_before")
+    def hook_after = dataGet(yamlConf, "pipeline_hook.docker_image_after")
+    if (hook_before == null || hook_after == null) {
+        notice('Docker Image Warning', "Warning！请使用 Hook 完成 DockerImage 流程。如不需要，请忽略此警告。")
+    } else {
+        if (hook_before != null) {
+            sh """bash -ex ${hook_before}"""
+        }
+
+        if (hook_after != null) {
+            sh """bash -ex ${hook_after}"""
+        }
+    }
 }
 
 def dockerPush(yamlConf) {
-    notice('Docker Push Warning', """
-Warning！当前项目 project.yaml 配置文件不存在，请使用 Hook 完成 dockerPush 流程。
-Hook 使用参见：http://code-base.yoyohr.com/kubernetes/no-jenkinsfile
-""")
+    def hook_before = dataGet(yamlConf, "pipeline_hook.docker_push_before")
+    def hook_after = dataGet(yamlConf, "pipeline_hook.docker_push_after")
+    if (hook_before == null || hook_after == null) {
+        notice('Docker Push Warning', "Warning！请使用 Hook 完成 DockerPush 流程。如不需要，请忽略此警告。")
+    } else {
+        if (hook_before != null) {
+            sh """bash -ex ${hook_before}"""
+        }
+
+        if (hook_after != null) {
+            sh """bash -ex ${hook_after}"""
+        }
+    }
 }
 
 def deploy(yamlConf) {
-    notice('Deploy Warning', """
-Warning！当前项目 project.yaml 配置文件不存在，请使用 Hook 完成 deploy 流程。
-Hook 使用参见：http://code-base.yoyohr.com/kubernetes/no-jenkinsfile
-""")
+    def hook_before = dataGet(yamlConf, "pipeline_hook.deploy_before")
+    def hook_after = dataGet(yamlConf, "pipeline_hook.deploy_after")
+    if (hook_before == null || hook_after == null) {
+        notice('Deploy Warning', "Warning！请使用 Hook 完成 Deploy 流程。如不需要，请忽略此警告。")
+    } else {
+        if (hook_before != null) {
+            sh """bash -ex ${hook_before}"""
+        }
+
+        if (hook_after != null) {
+            sh """bash -ex ${hook_after}"""
+        }
+    }
 }
