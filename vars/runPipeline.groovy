@@ -53,7 +53,10 @@ def call(url = "", barch = "") {
             }
         }
         pipelineInformation = pipelineInformation.concat("\nEnvironment:\n")
-        sh "printenv"
+        sh """
+bash -ex;
+printenv
+"""
         notice('Pipeline Information', pipelineInformation)
 
         try {
