@@ -26,8 +26,6 @@ def call() {
     def gitCredentialId = "gitCredential"
     // jenkins凭据ID，docker registry账号
     def dockerRegistryId = "dockerRegistryCredential"
-    def dockerRegistryUser = "admin"
-    def dockerRegistryPassword = "123456"
     // docker registry 地址
     def dockerRegistry = "http://registry.youpin-k8s.net"
     // 当前工作控件
@@ -99,8 +97,6 @@ def call() {
                 "MY_PWD=${myPwd}",
                 "MY_BUILD_ENV=${buildEnv}",
                 "MY_GIT_ID=${gitCredentialId}",
-                "MY_DOCKER_REGISTRY_USER=${dockerRegistryUser}",
-                "MY_DOCKER_REGISTRY_PASSWORD=${dockerRegistryPassword}",
                 "MY_DOCKER_REGISTRY=${dockerRegistry}",
                 "MY_DOCKER_REGISTRY_ID=${dockerRegistryId}",
                 "MY_DOCKER_IMAGE=${dockerImage}",
