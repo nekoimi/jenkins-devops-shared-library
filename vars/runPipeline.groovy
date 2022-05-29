@@ -65,6 +65,8 @@ def doRunPipeline(yamlConf, buildEnv) {
     if (yamlConf != null) {
         def r = dataGet(yamlConf, "pipeline")
         echo "R: ${r}"
+        def r2 = dataGet(yamlConf, "pipeline_hook.build_before")
+        echo "R2: ${r2}"
         group = yamlConf.get("pipeline")
     }
     echo "${group}-${buildEnv}"
