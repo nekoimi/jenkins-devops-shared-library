@@ -27,7 +27,7 @@ ls -l target
 
 jarName=\$(ls target | grep .jar\\\$)
 
-mv target/jarName target/app.jar
+mv target/${jarName} target/app.jar
 
 ls -l target
 """
