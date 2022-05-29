@@ -51,11 +51,9 @@ Project Config: ${project}
 
 def runShell() {
     stage('Build') {
-        echo """
->>>>>>>>>>>>>>>>>>>>>>>>>> Warning <<<<<<<<<<<<<<<<<<<<<<<<<<
+        noticeWarning text: """
 Warning！当前项目 project.yaml 配置文件不存在，请使用 BuildHook 完成 Build 流程。
 BuildHook 使用参见：http://code-base.yoyohr.com/kubernetes/no-jenkinsfile
->>>>>>>>>>>>>>>>>>>>>>>>>> Warning <<<<<<<<<<<<<<<<<<<<<<<<<<
 """
     }
 }
