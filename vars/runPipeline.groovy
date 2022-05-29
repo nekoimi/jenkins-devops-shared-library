@@ -22,14 +22,14 @@ def call(url = "", barch = "") {
     def projectYaml = "project.yaml"
     def buildEnv = "$params.BUILD_ENV"
     factory = [
-            "${GroupShell}-${BuildTest}": new shellSpecTestPipeline(),
+            "${GroupShell}-${BuildTest}"   : new shellSpecTestPipeline(),
             "${GroupShell}-${BuildRelease}": new shellSpecTestPipeline(),
 
-            "${GroupPhp}-${BuildTest}": new shellSpecTestPipeline(),
-            "${GroupPhp}-${BuildRelease}": new shellSpecTestPipeline(),
+            "${GroupPhp}-${BuildTest}"     : new shellSpecTestPipeline(),
+            "${GroupPhp}-${BuildRelease}"  : new shellSpecTestPipeline(),
 
-            "${GroupJava}-${BuildTest}": new shellSpecTestPipeline(),
-            "${GroupJava}-${BuildRelease}": new shellSpecTestPipeline()
+            "${GroupJava}-${BuildTest}"    : new shellSpecTestPipeline(),
+            "${GroupJava}-${BuildRelease}" : new shellSpecTestPipeline()
     ]
 
     stage('LoadEnv') {
@@ -38,9 +38,13 @@ def call(url = "", barch = "") {
             checkout scm
         }
 
-        factory.each { k, v ->
-            echo "factory: ${k} -> ${v}"
+        notice('Pipeline Factory', """
+${
+            factory.each { k, v ->
+                "factory: ${k} -> ${v}"
+            }
         }
+""")
 
         def yamlConf = null
         def exists = fileExists projectYaml
