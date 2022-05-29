@@ -40,6 +40,9 @@ def doRunPipeline(yamlConf, buildEnv) {
     if (yamlConf != null) {
         group = yamlConf.get("group")
     }
+    def name = createPipelineName(group, buildEnv)
+    echo "$name"
+
     def pipeline = new shellSpecTestPipeline()
     stage('Build') {
         pipeline.build()
@@ -56,6 +59,31 @@ def doRunPipeline(yamlConf, buildEnv) {
     stage('Deploy') {
         pipeline.deploy()
     }
+}
+
+def createPipelineName(group, buildEnv) {
+    if (group != null && group.length() > 0) {
+        def gsarr = group.split('-')
+        def gstr = gsarr.get(0)
+        for (int i = 1; i < gsarr.length; i++ ) {
+            gstr = gstr.concat(ucFirst(gsarr.get(i)))
+        }
+        group = gstr
+    }
+    buildEnv = ucFirst(buildEnv)
+
+    return "${group}${buildEnv}"
+}
+
+def ucFirst(str) {
+    if (str != null && str.length() > 0) {
+        def firstAt = str.getAt(0)
+        if (!Character.isUpperCase(firstAt)) {
+            str = str.substring(1, buildEnv.length())
+            str = str.toUpperCase().concat(buildEnv)
+        }
+    }
+    return str
 }
 
 return this
