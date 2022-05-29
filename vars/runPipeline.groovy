@@ -38,7 +38,7 @@ def call(url = "", barch = "") {
             checkout scm
         }
 
-        def pipelineInformation = ""
+        def pipelineInformation = "Pipeline:\n"
         factory.each { k, v ->
             pipelineInformation = pipelineInformation.concat("${k} -> ${v}\n")
         }
@@ -46,14 +46,14 @@ def call(url = "", barch = "") {
         def yamlConf = null
         def exists = fileExists projectYaml
         if (exists) {
-            pipelineInformation = pipelineInformation.concat("YamlConf: \n")
+            pipelineInformation = pipelineInformation.concat("\nYamlConf: \n")
             yamlConf = readYaml file: "project.yaml"
             yamlConf.each { k, v ->
                 pipelineInformation = pipelineInformation.concat("${k} -> ${v}\n")
             }
         }
-        pipelineInformation = pipelineInformation.concat("Environment:\n")
-        println(env)
+        pipelineInformation = pipelineInformation.concat("\nEnvironment:\n")
+        sh "printenv"
         notice('Pipeline Information', pipelineInformation)
 
         try {
