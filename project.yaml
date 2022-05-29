@@ -14,18 +14,18 @@ pipeline: shell-std
 # 构建hook, 用来扩展增强构建流程
 pipeline_hook:
   build_before: |
-    echo 'hook:build_before \n'
+    echo 'hook:build_before'
   build_after: |
-    echo 'hook:build_after \n'
+    echo 'hook:build_after'
   docker_image_before: |
-    echo 'hook:docker_image_before \n'
+    echo 'hook:docker_image_before'
   docker_image_after: |
-    echo 'hook:docker_image_after \n'
+    echo 'hook:docker_image_after'
   docker_push_before: |
-    echo 'hook:docker_push_before \n'
+    echo 'hook:docker_push_before'
   docker_push_after: |
-    echo 'hook:docker_push_after \n'
+    echo 'hook:docker_push_after'
   deploy_before: |
-    echo 'hook:deploy_before \n'
+    echo 'hook:deploy_before'
   deploy_after: |
-    echo 'hook:deploy_before \n'
+    echo 'hook:deploy_after'
