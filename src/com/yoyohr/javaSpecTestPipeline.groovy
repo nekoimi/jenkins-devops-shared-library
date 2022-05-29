@@ -18,7 +18,16 @@ ${hook_before}
 
     sh """
 bash -ex;
+
+sed -i 's/<packaging>war/<packaging>jar/g' pom.xml
+
 docker run --rm -w /work -v /root/.m2:/root/.m2 -v \${MY_PWD}:/work maven:3.6-openjdk-11 mvn clean package -Dfile.encoding=UTF-8 -DskipTests=true
+
+ls -l target
+
+jarName=\$(ls target | grep .jar\\\$)
+
+mv target/jarName target/app.jar
 
 ls -l target
 """
