@@ -5,6 +5,7 @@ import static com.yoyohr.environment.PipelineEnv.GroupShell
 import static com.yoyohr.environment.PipelineEnv.GroupPhp
 import static com.yoyohr.environment.PipelineEnv.GroupJava
 import com.yoyohr.shellSpecTestPipeline
+import com.yoyohr.unknowPipeline
 
 /**
  * <p>build</p>
@@ -20,6 +21,7 @@ def call(url = "", barch = "") {
     def buildId = "${env.BUILD_ID}"
     def projectYaml = "project.yaml"
     def buildEnv = "$params.BUILD_ENV"
+    pipeline = new unknowPipeline()
     factory = [
             "${GroupShell}-${BuildTest}": new shellSpecTestPipeline(),
             "${GroupShell}-${BuildRelease}": new shellSpecTestPipeline(),
@@ -59,14 +61,10 @@ def doRunPipeline(yamlConf, buildEnv) {
     if (yamlConf != null) {
         group = yamlConf.get("group")
     }
-    if (!factory.containsKey("${group}-${buildEnv}")) {
-        noticeWarning("""
-Warning！构建流程不支持，请使用 Hook 完成 Pipeline 流程。
-""")
-        return
-    }
 
-    def pipeline = factory.get("${group}-${buildEnv}")
+    if (factory.containsKey("${group}-${buildEnv}")) {
+        pipeline = factory.get("${group}-${buildEnv}")
+    }
 
     stage('Build') {
         pipeline.build()
