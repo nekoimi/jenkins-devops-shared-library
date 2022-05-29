@@ -1,5 +1,6 @@
 package com.yoyohr.pipeline
 
+import com.yoyohr.Notice
 import com.yoyohr.Pipeline
 import com.yoyohr.Hook
 
@@ -11,6 +12,7 @@ import com.yoyohr.Hook
 abstract class AbstractPipeline implements Pipeline {
     protected def project;
     protected Hook hook;
+    protected Notice notice = new Notice()
 
     @java.lang.Override
     void build() {
