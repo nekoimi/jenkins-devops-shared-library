@@ -40,18 +40,21 @@ def call(url = "", barch = "") {
 
         def pipelineInformation = ""
         factory.each { k, v ->
-            pipelineInformation = pipelineInformation.concat("${k} -> ${v} \n")
+            pipelineInformation = pipelineInformation.concat("${k} -> ${v}\n")
         }
-        notice('Pipeline Information', pipelineInformation)
 
         def yamlConf = null
         def exists = fileExists projectYaml
         if (exists) {
+            pipelineInformation = pipelineInformation.concat("YamlConf: \n")
             yamlConf = readYaml file: "project.yaml"
             yamlConf.each { k, v ->
-                echo "yamlConf: ${k} -> ${v}"
+                pipelineInformation = pipelineInformation.concat("${k} -> ${v}\n")
             }
         }
+        pipelineInformation = pipelineInformation.concat("Environment:\n")
+        println(env)
+        notice('Pipeline Information', pipelineInformation)
 
         try {
             doRunPipeline(yamlConf, buildEnv)
