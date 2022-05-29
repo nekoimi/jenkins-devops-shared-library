@@ -7,10 +7,15 @@ import com.yoyohr.pipeline.ShellHookPipeline
  *
  * @author nekoimi 2022/05/29
  */
-class PipelineRegistry {
+class PipelineFactory {
     private final static def registry = [:]
 
-    Pipeline of(key) {
+    Pipeline of(project, buildEnv) {
+        return new ShellHookPipeline()
+    }
+
+    Pipeline ofShellPipeline(buildEnv) {
+        // PipelineEnv.GroupShell, buildEnv
         return new ShellHookPipeline()
     }
 }

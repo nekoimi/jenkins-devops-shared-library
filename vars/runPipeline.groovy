@@ -1,6 +1,5 @@
 #!/usr/bin/groovy
-import com.yoyohr.PipelineRunner
-
+import com.yoyohr.PipelineFactory
 /**
  * <p>build</p>
  *
@@ -15,48 +14,44 @@ def call(url = "", barch = "") {
     def buildId = "${env.BUILD_ID}"
     def projectYaml = "project.yaml"
     def buildEnv = "$params.BUILD_ENV"
-    def runner = new PipelineRunner()
+    def factory = new PipelineFactory()
 
     stage('LoadEnv') {
         def exists = fileExists projectYaml
+        def pipeline = null
         if (exists) {
             def project = readYaml file: "project.yaml"
             println(project.getClass())
-            runner.run("java-spec", buildEnv)
+            pipeline = factory.of(project, buildEnv)
         } else {
-            runner.runShellPipeline(buildEnv)
+            pipeline = factory.ofShellPipeline(buildEnv)
         }
+        // Run
+        doRunPipeline(pipeline)
     }
 }
-//
-//def runYaml() {
-//    project = readYaml file: "project.yaml"
-//    println(project.getClass())
-//    def pipeline = registry.of("")
-//    echo """
-//Workspace: ${workspace}
-//Project.yaml: ${projectYaml}
-//Load Project Config: ${loadProjectYaml}
-//Project Config: ${project}
-//"""
-//
-//    stage('Build') {
-//        println(project)
-//        println("build")
-//
-//        sh "bash -ex test.sh"
-//    }
-//
-//    stage('Docker Image') {
-//        println(project)
-//        println("build")
-//
-//        sh "bash -ex test.sh"
-//    }
-//
-//    stage('Deploy') {
-//        println("deploy")
-//    }
-//}
+
+/**
+ * 按照顺序执行Pipeline
+ * @param pipeline
+ * @return
+ */
+def doRunPipeline(pipeline) {
+    stage('Build') {
+        pipeline.build()
+    }
+
+    stage('Docker Image') {
+        pipeline.dockerImage()
+    }
+
+    stage('Docker Push') {
+        pipeline.dockerPush()
+    }
+
+    stage('Deploy') {
+        pipeline.deploy()
+    }
+}
 
 return this
