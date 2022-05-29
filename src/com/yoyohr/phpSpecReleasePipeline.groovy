@@ -1,6 +1,6 @@
 package com.yoyohr
 /**
- * <p>完全使用外部Shell脚本的构建流程</p>
+ * <p>php项目生产环境标准构建流程</p>
  *
  * @author nekoimi 2022/05/29
  */
@@ -15,8 +15,6 @@ def build(yamlConf) {
             sh """
 bash -ex;
 ${hook_before}
-
-echo '${env.BUILD_ID}'
 """
         }
 

@@ -1,4 +1,4 @@
-package com.yoyohr
+package com.yoyohr.contract
 
 /**
  * <p>Pipeline</p>

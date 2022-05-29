@@ -5,7 +5,13 @@ import static com.yoyohr.environment.PipelineEnv.GroupShell
 import static com.yoyohr.environment.PipelineEnv.GroupPhp
 import static com.yoyohr.environment.PipelineEnv.GroupJava
 import static com.yoyohr.environment.PipelineEnv.GroupGo
-import com.yoyohr.shellSpecTestPipeline
+import com.yoyohr.shellSpecPipeline
+import com.yoyohr.javaSpecTestPipeline
+import com.yoyohr.javaSpecReleasePipeline
+import com.yoyohr.phpSpecTestPipeline
+import com.yoyohr.phpSpecReleasePipeline
+import com.yoyohr.goSpecTestPipeline
+import com.yoyohr.goSpecReleasePipeline
 import com.yoyohr.unknowPipeline
 
 /**
@@ -23,17 +29,17 @@ def call() {
     def projectYaml = "project.yaml"
     def buildEnv = "$params.BUILD_ENV"
     factory = [
-            "${GroupShell}-${BuildTest}"   : new shellSpecTestPipeline(),
-            "${GroupShell}-${BuildRelease}": new shellSpecTestPipeline(),
+            "${GroupShell}-${BuildTest}"   : new shellSpecPipeline(),
+            "${GroupShell}-${BuildRelease}": new shellSpecPipeline(),
 
-            "${GroupPhp}-${BuildTest}"     : new shellSpecTestPipeline(),
-            "${GroupPhp}-${BuildRelease}"  : new shellSpecTestPipeline(),
+            "${GroupPhp}-${BuildTest}"     : new phpSpecTestPipeline(),
+            "${GroupPhp}-${BuildRelease}"  : new phpSpecReleasePipeline(),
 
-            "${GroupJava}-${BuildTest}"    : new shellSpecTestPipeline(),
-            "${GroupJava}-${BuildRelease}" : new shellSpecTestPipeline(),
+            "${GroupJava}-${BuildTest}"    : new javaSpecTestPipeline(),
+            "${GroupJava}-${BuildRelease}" : new javaSpecReleasePipeline(),
 
-            "${GroupGo}-${BuildTest}"    : new shellSpecTestPipeline(),
-            "${GroupGo}-${BuildRelease}" : new shellSpecTestPipeline()
+            "${GroupGo}-${BuildTest}"    : new goSpecTestPipeline(),
+            "${GroupGo}-${BuildRelease}" : new goSpecReleasePipeline()
     ]
 
     stage('LoadEnv') {
