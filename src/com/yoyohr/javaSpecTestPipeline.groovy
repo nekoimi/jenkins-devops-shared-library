@@ -52,7 +52,7 @@ ${hook_before}
     }
 
     docker.withRegistry("${MY_DOCKER_REGISTRY}", "${MY_DOCKER_REGISTRY_ID}") {
-        docker.build("${MY_PROJECT_GROUP}/${MY_PROJECT_NAME}").push("${MY_PROJECT_VERSION}-${MY_BUILD_ENV}")
+        docker.build("java-repos/${MY_PROJECT_NAME}").push("${MY_PROJECT_VERSION}-${MY_BUILD_ENV}")
     }
 
 //    sh """
