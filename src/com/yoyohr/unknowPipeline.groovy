@@ -6,25 +6,25 @@ package com.yoyohr
  * @author nekoimi 2022/05/29
  */
 
-def build() {
+def build(yamlConf) {
     noticeWarning("""
 Warning！构建流程不支持，请使用 Hook 完成 Pipeline 流程。
 """)
 }
 
-def dockerImage() {
+def dockerImage(yamlConf) {
     noticeWarning("""
 Warning！构建流程不支持，请使用 Hook 完成 Pipeline 流程。
 """)
 }
 
-def dockerPush() {
+def dockerPush(yamlConf) {
     noticeWarning("""
 Warning！构建流程不支持，请使用 Hook 完成 Pipeline 流程。
 """)
 }
 
-def deploy() {
+def deploy(yamlConf) {
     noticeWarning("""
 Warning！构建流程不支持，请使用 Hook 完成 Pipeline 流程。
 """)

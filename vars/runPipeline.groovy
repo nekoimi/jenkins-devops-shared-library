@@ -63,7 +63,9 @@ def call(url = "", barch = "") {
 def doRunPipeline(yamlConf, buildEnv) {
     def group = "${GroupShell}"
     if (yamlConf != null) {
-        group = yamlConf.get("group")
+        def r = dataGet(yamlConf, "pipeline")
+        echo "R: ${r}"
+        group = yamlConf.get("pipeline")
     }
     echo "${group}-${buildEnv}"
     def pipeline = null
@@ -74,19 +76,19 @@ def doRunPipeline(yamlConf, buildEnv) {
     }
 
     stage('Build') {
-        pipeline.build()
+        pipeline.build(yamlConf)
     }
 
     stage('Docker Image') {
-        pipeline.dockerImage()
+        pipeline.dockerImage(yamlConf)
     }
 
     stage('Docker Push') {
-        pipeline.dockerPush()
+        pipeline.dockerPush(yamlConf)
     }
 
     stage('Deploy') {
-        pipeline.deploy()
+        pipeline.deploy(yamlConf)
     }
 }
 
