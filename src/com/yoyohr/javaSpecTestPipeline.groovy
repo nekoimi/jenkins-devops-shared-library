@@ -51,19 +51,19 @@ ${hook_before}
 """
     }
 
-    docker.withRegistry("${MY_DOCKER_REGISTRY}", "${MY_DOCKER_REGISTRY_ID}") {
-        sh """
-docker login -u admin -p 123456 http://registry.youpin-k8s.net
+//    docker.withRegistry("${MY_DOCKER_REGISTRY}", "${MY_DOCKER_REGISTRY_ID}") {
+//        docker.build("${MY_PROJECT_GROUP}/${MY_PROJECT_NAME}").push("${MY_PROJECT_VERSION}-${MY_BUILD_ENV}")
+//    }
+
+    sh """
+bash -ex;
+
+docker login -u \${MY_DOCKER_REGISTRY_USER} -p \${MY_DOCKER_REGISTRY_PASSWORD} \${MY_DOCKER_REGISTRY}
+
+docker build -t \${MY_DOCKER_REGISTRY_IMAGE} .
+
+docker push \${MY_DOCKER_REGISTRY_IMAGE}
 """
-        docker.build("${MY_PROJECT_GROUP}/${MY_PROJECT_NAME}").push("${MY_PROJECT_VERSION}-${MY_BUILD_ENV}")
-//        sh """
-//bash -ex;
-//
-//docker build -t \${MY_DOCKER_REGISTRY_IMAGE} .
-//
-//docker push \${MY_DOCKER_REGISTRY_IMAGE}
-//"""
-    }
 
     if (hook_after != null) {
         sh """
