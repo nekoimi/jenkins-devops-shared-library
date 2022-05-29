@@ -77,7 +77,7 @@ def createPipelineName(group, buildEnv) {
 
 def ucFirst(str) {
     if (str != null && str.length() > 0) {
-        def firstAt = str.getAt(0)
+        def firstAt = str.toString().getAt(0)
         if (!Character.isUpperCase(firstAt)) {
             str = str.substring(1, buildEnv.length())
             str = str.toUpperCase().concat(buildEnv)
