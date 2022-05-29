@@ -52,13 +52,14 @@ ${hook_before}
     }
 
     docker.withRegistry("${MY_DOCKER_REGISTRY}", "${MY_DOCKER_REGISTRY_ID}") {
-        sh """
-bash -ex;
-
-docker build -t \${MY_DOCKER_REGISTRY_IMAGE} .
-
-docker push \${MY_DOCKER_REGISTRY_IMAGE}
-"""
+        docker.build("${MY_PROJECT_GROUP}/${MY_PROJECT_NAME}").push("${MY_PROJECT_VERSION}-${MY_BUILD_ENV}")
+//        sh """
+//bash -ex;
+//
+//docker build -t \${MY_DOCKER_REGISTRY_IMAGE} .
+//
+//docker push \${MY_DOCKER_REGISTRY_IMAGE}
+//"""
     }
 
     if (hook_after != null) {
