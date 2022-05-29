@@ -1,6 +1,7 @@
 #!/usr/bin/groovy
 import com.yoyohr.environment.PipelineEnv
 import com.yoyohr.shellSpecTestPipeline
+
 /**
  * <p>build</p>
  *
@@ -15,13 +16,20 @@ def call(url = "", barch = "") {
     def buildId = "${env.BUILD_ID}"
     def projectYaml = "project.yaml"
     def buildEnv = "$params.BUILD_ENV"
+    factory = [
+            "${PipelineEnv.GroupShell}${PipelineEnv.BuildTest}": new shellSpecTestPipeline()
+    ]
 
     stage('LoadEnv') {
+        factory.each { k, v ->
+            echo "factory: ${k} -> ${v}"
+        }
+
         def yamlConf = null
         def exists = fileExists projectYaml
         if (exists) {
             yamlConf = readYaml file: "project.yaml"
-            yamlConf.each{ k, v ->
+            yamlConf.each { k, v ->
                 echo "yamlConf: ${k} -> ${v}"
             }
         }
@@ -40,46 +48,28 @@ def doRunPipeline(yamlConf, buildEnv) {
     if (yamlConf != null) {
         group = yamlConf.get("group")
     }
-    def name = createPipelineName(group, buildEnv)
-    echo "$name"
-
-    def pipeline = new shellSpecTestPipeline()
-    stage('Build') {
-        pipeline.build()
-    }
-
-    stage('Docker Image') {
-        pipeline.dockerImage()
-    }
-
-    stage('Docker Push') {
-        pipeline.dockerPush()
-    }
-
-    stage('Deploy') {
-        pipeline.deploy()
-    }
-}
-
-def createPipelineName(group, buildEnv) {
-    if (group != null && group.length() > 0) {
-        def gsarr = group.split('-')
-        def gstr = gsarr.get(0)
-        for (int i = 1; i < gsarr.length; i++ ) {
-            gstr = gstr.concat(ucFirst(gsarr.get(i)))
+    def pipeline = factory.getAt("${group}${buildEnv}")
+    if (pipeline == null) {
+        noticeWarning('Docker Image Warning', """
+Warning！构建流程不支持，请使用 Hook 完成 Pipeline 流程。
+""")
+    } else {
+        stage('Build') {
+            pipeline.build()
         }
-        group = gstr
-    }
-    buildEnv = ucFirst(buildEnv)
 
-    return "${group}${buildEnv}"
-}
+        stage('Docker Image') {
+            pipeline.dockerImage()
+        }
 
-def ucFirst(str) {
-    if (str != null && str.length() > 0) {
-        return str[0].toUpperCase() + str[1..-1]
+        stage('Docker Push') {
+            pipeline.dockerPush()
+        }
+
+        stage('Deploy') {
+            pipeline.deploy()
+        }
     }
-    return str
 }
 
 return this
