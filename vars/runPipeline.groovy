@@ -68,6 +68,7 @@ def call() {
         }
 
         def yamlConf = null
+
         // Project information
         def projectGroup = "library"
         def projectName = jobName
@@ -85,6 +86,10 @@ def call() {
             }
         }
 
+        // Docker image
+        def dockerImage = "${projectGroup}/${projectName}:${projectVersion}-${buildEnv}"
+        def dockerRegistryImage = "${dockerRegistry}/${dockerImage}"
+
         // Run with environment
         withEnv([
                 "MY_WORKSPACE=${workspace}",
@@ -94,6 +99,8 @@ def call() {
                 "MY_GIT_ID=${gitCredentialId}",
                 "MY_DOCKER_REGISTRY=${dockerRegistry}",
                 "MY_DOCKER_REGISTRY_ID=${dockerRegistryId}",
+                "MY_DOCKER_IMAGE=${dockerImage}",
+                "MY_DOCKER_REGISTRY_IMAGE=${dockerRegistryImage}",
                 "MY_PROJECT_GROUP=${projectGroup}",
                 "MY_PROJECT_NAME=${projectName}",
                 "MY_PROJECT_VERSION=${projectVersion}"
