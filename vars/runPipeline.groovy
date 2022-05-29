@@ -9,16 +9,18 @@ import com.yoyohr.utils
 
 def call(url = "", barch = "") {
     // jenkins上devops的git账号凭据ID
-    def gitDevOpsId = "5a8151d1-6d6b-4160-8f32-122a9e9a74ba"
+    gitDevOpsId = "5a8151d1-6d6b-4160-8f32-122a9e9a74ba"
     workspace = "$env.workspace/"
-    def jobName = "${env.JOB_NAME}"
-    def buildId = "${env.BUILD_ID}"
+    jobName = "${env.JOB_NAME}"
+    buildId = "${env.BUILD_ID}"
     defaultDeployScript = workspace + "deploy.sh"
     projectYaml = workspace + "project.yaml"
-    def buildEnv = "$params.BUILD_ENV"
-    def util = new utils()
+    buildEnv = "$params.BUILD_ENV"
+    util = new utils()
 
     stage('LoadEnv') {
+        def exists = fileExists "project.yaml"
+        println(exists)
         if (util.fileExists(projectYaml)) {
             runYaml()
         } else {
