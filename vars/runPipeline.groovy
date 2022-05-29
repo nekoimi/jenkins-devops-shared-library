@@ -77,7 +77,7 @@ def call() {
         if (exists) {
             pipelineInformation = pipelineInformation.concat("\nYamlConf: \n")
             yamlConf = readYaml file: "project.yaml"
-            projectGroup = dataGet(yamlConf, "name")
+            projectGroup = dataGet(yamlConf, "group")
             projectName = dataGet(yamlConf, "name")
             projectVersion = dataGet(yamlConf, "version")
             yamlConf.each { k, v ->
