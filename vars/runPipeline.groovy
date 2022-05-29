@@ -1,5 +1,9 @@
 #!/usr/bin/groovy
-import com.yoyohr.environment.PipelineEnv
+import static com.yoyohr.environment.PipelineEnv.BuildTest
+import static com.yoyohr.environment.PipelineEnv.BuildRelease
+import static com.yoyohr.environment.PipelineEnv.GroupShell
+import static com.yoyohr.environment.PipelineEnv.GroupPhp
+import static com.yoyohr.environment.PipelineEnv.GroupJava
 import com.yoyohr.shellSpecTestPipeline
 
 /**
@@ -17,7 +21,14 @@ def call(url = "", barch = "") {
     def projectYaml = "project.yaml"
     def buildEnv = "$params.BUILD_ENV"
     factory = [
-            "${PipelineEnv.GroupShell}${PipelineEnv.BuildTest}": new shellSpecTestPipeline()
+            "${GroupShell}-${BuildTest}": new shellSpecTestPipeline(),
+            "${GroupShell}-${BuildRelease}": new shellSpecTestPipeline(),
+
+            "${GroupPhp}-${BuildTest}": new shellSpecTestPipeline(),
+            "${GroupPhp}-${BuildRelease}": new shellSpecTestPipeline(),
+
+            "${GroupJava}-${BuildTest}": new shellSpecTestPipeline(),
+            "${GroupJava}-${BuildRelease}": new shellSpecTestPipeline()
     ]
 
     stage('LoadEnv') {
@@ -44,31 +55,33 @@ def call(url = "", barch = "") {
  * @return
  */
 def doRunPipeline(yamlConf, buildEnv) {
-    def group = "${PipelineEnv.GroupShell}"
+    def group = "${GroupShell}"
     if (yamlConf != null) {
         group = yamlConf.get("group")
     }
-    def pipeline = factory.getAt("${group}${buildEnv}")
-    if (pipeline == null) {
-        noticeWarning('Docker Image Warning', """
+    if (!factory.containsKey("${group}-${buildEnv}")) {
+        noticeWarning("""
 Warning！构建流程不支持，请使用 Hook 完成 Pipeline 流程。
 """)
-    } else {
-        stage('Build') {
-            pipeline.build()
-        }
+        return
+    }
 
-        stage('Docker Image') {
-            pipeline.dockerImage()
-        }
+    def pipeline = factory.get("${group}-${buildEnv}")
 
-        stage('Docker Push') {
-            pipeline.dockerPush()
-        }
+    stage('Build') {
+        pipeline.build()
+    }
 
-        stage('Deploy') {
-            pipeline.deploy()
-        }
+    stage('Docker Image') {
+        pipeline.dockerImage()
+    }
+
+    stage('Docker Push') {
+        pipeline.dockerPush()
+    }
+
+    stage('Deploy') {
+        pipeline.deploy()
     }
 }
 

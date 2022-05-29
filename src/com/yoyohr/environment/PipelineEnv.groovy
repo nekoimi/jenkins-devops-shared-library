@@ -15,5 +15,7 @@ final class PipelineEnv {
     /**
      * 构建分组
      */
-    public static final def GroupShell = "shell-spec"
+    public static final def GroupShell = "shell-std"
+    public static final def GroupPhp = "php-std"
+    public static final def GroupJava = "java-std"
 }
