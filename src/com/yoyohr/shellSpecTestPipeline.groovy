@@ -15,6 +15,8 @@ def build(yamlConf) {
             sh """
 bash -ex;
 ${hook_before}
+
+echo '${env.BUILD_ID}'
 """
         }
 
