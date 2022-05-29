@@ -49,7 +49,7 @@ def call(url = "", barch = "") {
         try {
             doRunPipeline(yamlConf, buildEnv)
         } finally {
-            cleanWs()
+            // cleanWs()
         }
     }
 }
