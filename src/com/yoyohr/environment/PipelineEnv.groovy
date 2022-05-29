@@ -18,4 +18,5 @@ final class PipelineEnv {
     public static final def GroupShell = "shell-spec"
     public static final def GroupPhp = "php-spec"
     public static final def GroupJava = "java-spec"
+    public static final def GroupGo = "go-spec"
 }

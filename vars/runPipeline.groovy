@@ -4,6 +4,7 @@ import static com.yoyohr.environment.PipelineEnv.BuildRelease
 import static com.yoyohr.environment.PipelineEnv.GroupShell
 import static com.yoyohr.environment.PipelineEnv.GroupPhp
 import static com.yoyohr.environment.PipelineEnv.GroupJava
+import static com.yoyohr.environment.PipelineEnv.GroupGo
 import com.yoyohr.shellSpecTestPipeline
 import com.yoyohr.unknowPipeline
 
@@ -29,7 +30,10 @@ def call() {
             "${GroupPhp}-${BuildRelease}"  : new shellSpecTestPipeline(),
 
             "${GroupJava}-${BuildTest}"    : new shellSpecTestPipeline(),
-            "${GroupJava}-${BuildRelease}" : new shellSpecTestPipeline()
+            "${GroupJava}-${BuildRelease}" : new shellSpecTestPipeline(),
+
+            "${GroupGo}-${BuildTest}"    : new shellSpecTestPipeline(),
+            "${GroupGo}-${BuildRelease}" : new shellSpecTestPipeline()
     ]
 
     stage('LoadEnv') {
