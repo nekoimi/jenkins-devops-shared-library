@@ -115,9 +115,13 @@ def call() {
 
             try {
                 doRunPipeline(yamlConf, buildEnv)
-            } catch (Exception e) {
-                noticeWarning(e.message)
-            } finally {
+            }
+
+//            catch (Exception e) {
+//                noticeWarning(e.message)
+//            }
+
+            finally {
                 cleanWs()
             }
         }
