@@ -27,7 +27,7 @@ def call() {
     // jenkins凭据ID，docker registry账号
     def dockerRegistryId = "dockerRegistryCredential"
     // docker registry 地址
-    def dockerRegistry = "registry.youpin-k8s.net"
+    def dockerRegistry = "http://registry.youpin-k8s.net"
     // 当前工作控件
     def workspace = "${env.workspace}"
     // 任务名称
