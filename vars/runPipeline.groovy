@@ -22,6 +22,8 @@ import com.yoyohr.unknowPipeline
 
 def call() {
     // jenkins上devops的git账号凭据ID
+    def myBasename = sh(script: "\$(basename `pwd`)", returnStdout: true)
+    def myPwd = "/home/nfs/jenkins/data/jenkins_home/workspace/${myBasename}"
     def gitDevOpsId = "5a8151d1-6d6b-4160-8f32-122a9e9a74ba"
     def workspace = "$env.workspace"
     def jobName = "${env.JOB_NAME}"
@@ -43,7 +45,7 @@ def call() {
     ]
 
     withEnv([
-            'MY_PWD=/home/nfs/jenkins/data/jenkins_home/workspace/\$(basename `pwd`)',
+            "MY_PWD=${myPwd}",
     ]) {
         stage('LoadEnv') {
             def workspaceExists = fileExists workspace
