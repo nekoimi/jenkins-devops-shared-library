@@ -52,11 +52,6 @@ def call(url = "", barch = "") {
                 pipelineInformation = pipelineInformation.concat("${k} -> ${v}\n")
             }
         }
-        pipelineInformation = pipelineInformation.concat("\nEnvironment:\n")
-        sh """
-bash -ex;
-printenv
-"""
         notice('Pipeline Information', pipelineInformation)
 
         try {
