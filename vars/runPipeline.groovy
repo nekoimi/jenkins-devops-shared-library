@@ -38,11 +38,11 @@ def call(url = "", barch = "") {
             checkout scm
         }
 
-        def factoryInfo = ""
+        def pipelineInformation = ""
         factory.each { k, v ->
-            factoryInfo.concat("${k} -> ${v} \n")
+            pipelineInformation = pipelineInformation.concat("${k} -> ${v} \n")
         }
-        notice('Pipeline Factory', factoryInfo)
+        notice('Pipeline Information', pipelineInformation)
 
         def yamlConf = null
         def exists = fileExists projectYaml
