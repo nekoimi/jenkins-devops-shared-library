@@ -52,12 +52,10 @@ ${hook_before}
     }
 
     docker.withRegistry("${MY_DOCKER_REGISTRY}", "${MY_DOCKER_REGISTRY_ID}") {
-        docker.build("${MY_PROJECT_GROUP}/${MY_PROJECT_NAME}")
-
-        //docker tag \${MY_DOCKER_IMAGE} \${MY_DOCKER_REGISTRY_IMAGE}
-
         sh """
 bash -ex;
+
+docker build -t \${MY_DOCKER_REGISTRY_IMAGE} .
 
 docker push \${MY_DOCKER_REGISTRY_IMAGE}
 """
