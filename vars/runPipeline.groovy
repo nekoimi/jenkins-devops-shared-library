@@ -63,8 +63,8 @@ def doRunPipeline(yamlConf, buildEnv) {
 
 def createPipelineName(group, buildEnv) {
     if (group != null && group.length() > 0) {
-        GString[] gsarr = group.split('-')
-        GString gstr = gsarr.get(0)
+        def gsarr = group.split('-')
+        def gstr = gsarr.get(0)
         for (int i = 1; i < gsarr.length; i++ ) {
             gstr = gstr.concat(ucFirst(gsarr.get(i)))
         }
@@ -75,13 +75,9 @@ def createPipelineName(group, buildEnv) {
     return "${group}${buildEnv}"
 }
 
-def ucFirst(GString str) {
+def ucFirst(str) {
     if (str != null && str.length() > 0) {
-        def firstAt = str.getAt(0)
-        if (!Character.isUpperCase(firstAt)) {
-            str = str.substring(1, str.length())
-            str = str.toUpperCase().concat(str)
-        }
+        return str[0].toUpperCase() + str[1..-1]
     }
     return str
 }
