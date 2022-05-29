@@ -5,7 +5,7 @@ package com.yoyohr
  *
  * @author nekoimi 2022/05/29
  */
-interface PipelineHook {
+interface Hook {
     void buildBefore()
     void buildAfter()
     void deployBefore()

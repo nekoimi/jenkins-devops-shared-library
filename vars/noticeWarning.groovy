@@ -5,10 +5,6 @@
  */
 
 def call(text = "") {
-    def testClazz = text.getClass().toString()
-    if (testClazz == "java.util.LinkedHashMap") {
-        text = text.get("text")
-    }
     echo """
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> Warning <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 ${text}
