@@ -20,7 +20,7 @@ ${hook_before}
 bash -ex;
 printenv
 
-docker run --rm -w /work -v \$PWD:/work maven:3.6-openjdk-11 mvn clean package -Dfile.encoding=UTF-8 -DskipTests=true
+docker run --rm -w /work -v \${MY_PWD}:/work maven:3.6-openjdk-11 mvn clean package -Dfile.encoding=UTF-8 -DskipTests=true
 """
 
     if (hook_after != null) {

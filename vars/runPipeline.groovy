@@ -42,35 +42,39 @@ def call() {
             "${GroupGo}-${BuildRelease}" : new goSpecReleasePipeline()
     ]
 
-    stage('LoadEnv') {
-        def workspaceExists = fileExists workspace
-        if (!workspaceExists) {
-            checkout scm
-        }
+    withEnv([
+            'MY_PWD=/home/nfs/jenkins/data/jenkins_home/workspace/\$(basename `pwd`)',
+    ]) {
+        stage('LoadEnv') {
+            def workspaceExists = fileExists workspace
+            if (!workspaceExists) {
+                checkout scm
+            }
 
-        def pipelineInformation = "Pipeline:\n"
-        factory.each { k, v ->
-            pipelineInformation = pipelineInformation.concat("${k} -> ${v}\n")
-        }
-
-        def yamlConf = null
-        def exists = fileExists projectYaml
-        if (exists) {
-            pipelineInformation = pipelineInformation.concat("\nYamlConf: \n")
-            yamlConf = readYaml file: "project.yaml"
-            yamlConf.each { k, v ->
+            def pipelineInformation = "Pipeline:\n"
+            factory.each { k, v ->
                 pipelineInformation = pipelineInformation.concat("${k} -> ${v}\n")
             }
-        }
-        // ls
-        sh "ls -l"
 
-        notice('Pipeline Information', pipelineInformation)
+            def yamlConf = null
+            def exists = fileExists projectYaml
+            if (exists) {
+                pipelineInformation = pipelineInformation.concat("\nYamlConf: \n")
+                yamlConf = readYaml file: "project.yaml"
+                yamlConf.each { k, v ->
+                    pipelineInformation = pipelineInformation.concat("${k} -> ${v}\n")
+                }
+            }
+            // ls
+            sh "ls -l"
 
-        try {
-            doRunPipeline(yamlConf, buildEnv)
-        } finally {
-            cleanWs()
+            notice('Pipeline Information', pipelineInformation)
+
+            try {
+                doRunPipeline(yamlConf, buildEnv)
+            } finally {
+                cleanWs()
+            }
         }
     }
 }
