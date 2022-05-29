@@ -10,11 +10,7 @@ def build(yamlConf) {
     noticeWarning("Warning！构建流程不支持。")
 }
 
-def dockerImage(yamlConf) {
-    noticeWarning("Warning！构建流程不支持。")
-}
-
-def dockerPush(yamlConf) {
+def docker(yamlConf) {
     noticeWarning("Warning！构建流程不支持。")
 }
 

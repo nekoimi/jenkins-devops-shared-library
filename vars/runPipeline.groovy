@@ -21,14 +21,26 @@ import com.yoyohr.unknowPipeline
  */
 
 def call() {
-    // jenkins上devops的git账号凭据ID
-    def gitDevOpsId = "5a8151d1-6d6b-4160-8f32-122a9e9a74ba"
-    def workspace = "$env.workspace"
+    // =========================================================================
+    // jenkins凭据ID，git账号
+    def gitCredentialId = "gitCredential"
+    // jenkins凭据ID，docker registry账号
+    def dockerRegistryId = "dockerRegistryCredential"
+    // docker registry 地址
+    def dockerRegistry = "registry.youpin-k8s.net"
+    // 当前工作控件
+    def workspace = "${env.workspace}"
+    // 任务名称
     def jobName = "${env.JOB_NAME}"
+    // 任务 Build ID
     def buildId = "${env.BUILD_ID}"
+    // 当前项目在宿主机目录，用来 docker in docker 时 volume 映射
     def myPwd = "/home/nfs/jenkins/data/jenkins_home/workspace/${jobName}"
+    // 项目信息及构建配置
     def projectYaml = "project.yaml"
+    // 项目构建环境
     def buildEnv = "$params.BUILD_ENV"
+    // =========================================================================
     factory = [
             "${GroupShell}-${BuildTest}"   : new shellSpecPipeline(),
             "${GroupShell}-${BuildRelease}": new shellSpecPipeline(),
@@ -39,33 +51,53 @@ def call() {
             "${GroupJava}-${BuildTest}"    : new javaSpecTestPipeline(),
             "${GroupJava}-${BuildRelease}" : new javaSpecReleasePipeline(),
 
-            "${GroupGo}-${BuildTest}"    : new goSpecTestPipeline(),
-            "${GroupGo}-${BuildRelease}" : new goSpecReleasePipeline()
+            "${GroupGo}-${BuildTest}"      : new goSpecTestPipeline(),
+            "${GroupGo}-${BuildRelease}"   : new goSpecReleasePipeline()
     ]
 
-    withEnv([
-            "MY_PWD=${myPwd}",
-    ]) {
-        stage('LoadEnv') {
-            def workspaceExists = fileExists workspace
-            if (!workspaceExists) {
-                checkout scm
-            }
 
-            def pipelineInformation = "Pipeline:\n"
-            factory.each { k, v ->
+    stage('LoadEnv') {
+        def workspaceExists = fileExists workspace
+        if (!workspaceExists) {
+            checkout scm
+        }
+
+        def pipelineInformation = "Pipeline:\n"
+        factory.each { k, v ->
+            pipelineInformation = pipelineInformation.concat("${k} -> ${v}\n")
+        }
+
+        def yamlConf = null
+        // Project information
+        def projectGroup = "library"
+        def projectName = jobName
+        def projectVersion = buildId
+
+        def exists = fileExists projectYaml
+        if (exists) {
+            pipelineInformation = pipelineInformation.concat("\nYamlConf: \n")
+            yamlConf = readYaml file: "project.yaml"
+            projectGroup = dataGet(yamlConf, "name")
+            projectName = dataGet(yamlConf, "name")
+            projectVersion = dataGet(yamlConf, "version")
+            yamlConf.each { k, v ->
                 pipelineInformation = pipelineInformation.concat("${k} -> ${v}\n")
             }
+        }
 
-            def yamlConf = null
-            def exists = fileExists projectYaml
-            if (exists) {
-                pipelineInformation = pipelineInformation.concat("\nYamlConf: \n")
-                yamlConf = readYaml file: "project.yaml"
-                yamlConf.each { k, v ->
-                    pipelineInformation = pipelineInformation.concat("${k} -> ${v}\n")
-                }
-            }
+        // Run with environment
+        withEnv([
+                "MY_WORKSPACE=${workspace}",
+                "MY_JOB_NAME=${jobName}",
+                "MY_PWD=${myPwd}",
+                "MY_BUILD_ENV=${buildEnv}",
+                "MY_GIT_ID=${gitCredentialId}",
+                "MY_DOCKER_REGISTRY=${dockerRegistry}",
+                "MY_DOCKER_REGISTRY_ID=${dockerRegistryId}",
+                "MY_PROJECT_GROUP=${projectGroup}",
+                "MY_PROJECT_NAME=${projectName}",
+                "MY_PROJECT_VERSION=${projectVersion}"
+        ]) {
             // ls
             sh "ls -l"
 
@@ -90,14 +122,14 @@ def call() {
  * @return
  */
 def doRunPipeline(yamlConf, buildEnv) {
-    def group = "${GroupShell}"
+    def pipelineGroup = "${GroupShell}"
     if (yamlConf != null) {
-        group = dataGet(yamlConf, "pipeline")
+        pipelineGroup = dataGet(yamlConf, "pipeline")
     }
-    echo "${group}-${buildEnv}"
+    echo "Using build: ${pipelineGroup}-${buildEnv}"
     def pipeline = null
-    if (factory.containsKey("${group}-${buildEnv}")) {
-        pipeline = factory.get("${group}-${buildEnv}")
+    if (factory.containsKey("${pipelineGroup}-${buildEnv}")) {
+        pipeline = factory.get("${pipelineGroup}-${buildEnv}")
     } else {
         pipeline = new unknowPipeline()
     }
@@ -106,12 +138,8 @@ def doRunPipeline(yamlConf, buildEnv) {
         pipeline.build(yamlConf)
     }
 
-    stage('Docker Image') {
-        pipeline.dockerImage(yamlConf)
-    }
-
-    stage('Docker Push') {
-        pipeline.dockerPush(yamlConf)
+    stage('Docker') {
+        pipeline.docker(yamlConf)
     }
 
     stage('Deploy') {

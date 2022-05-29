@@ -7,7 +7,6 @@ package com.yoyohr.contract
  */
 interface Pipeline {
     void build()
-    void dockerImage()
-    void dockerPush()
+    void docker()
     void deploy()
 }

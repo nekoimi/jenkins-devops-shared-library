@@ -6,6 +6,8 @@ version: 0.0.36
 description: 账户服务
 # 项目语言
 program_language: java
+# 项目分组，给项目分类，相同分类的项目docker image会放在同一个分组下
+group: java-project
 # 项目构建流程
 # shell-spec: 标准shell构建，完全使用hook来组装流程
 # php-spec: 标准php构建，php-fpm + nginx -> docker
@@ -17,14 +19,10 @@ pipeline_hook:
     echo 'hook:build_before'
   build_after: |
     echo 'hook:build_after'
-  docker_image_before: |
-    echo 'hook:docker_image_before'
-  docker_image_after: |
-    echo 'hook:docker_image_after'
-  docker_push_before: |
-    echo 'hook:docker_push_before'
-  docker_push_after: |
-    echo 'hook:docker_push_after'
+  docker_before: |
+    echo 'hook:docker_before'
+  docker_after: |
+    echo 'hook:docker_after'
   deploy_before: |
     echo 'hook:deploy_before'
   deploy_after: |

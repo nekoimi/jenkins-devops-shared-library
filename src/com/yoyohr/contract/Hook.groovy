@@ -8,6 +8,8 @@ package com.yoyohr.contract
 interface Hook {
     void buildBefore()
     void buildAfter()
+    void dockerBefore()
+    void dockerAfter()
     void deployBefore()
     void deployAfter()
 }
