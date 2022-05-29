@@ -38,13 +38,11 @@ def call(url = "", barch = "") {
             checkout scm
         }
 
-        notice('Pipeline Factory', """
-${
-            factory.each { k, v ->
-                "factory: ${k} -> ${v}"
-            }
+        def factory = ""
+        factory.each { k, v ->
+            factory.concat("${k} -> ${v} \n")
         }
-""")
+        notice('Pipeline Factory', ${factory})
 
         def yamlConf = null
         def exists = fileExists projectYaml
