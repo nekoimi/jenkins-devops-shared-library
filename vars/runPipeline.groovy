@@ -69,6 +69,9 @@ def call() {
             // ls
             sh "ls -l"
 
+            // printenv
+            sh "printenv"
+
             notice('Pipeline Information', pipelineInformation)
 
             try {
