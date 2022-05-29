@@ -1,6 +1,6 @@
 package com.yoyohr
 /**
- * <p>java项目测试环境标准构建流程</p>
+ * <p>java项目标准构建流程</p>
  *
  * @author nekoimi 2022/05/29
  */

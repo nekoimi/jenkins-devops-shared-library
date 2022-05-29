@@ -1,17 +1,13 @@
 #!/usr/bin/groovy
-import static com.yoyohr.environment.PipelineEnv.BuildTest
-import static com.yoyohr.environment.PipelineEnv.BuildRelease
-import static com.yoyohr.environment.PipelineEnv.GroupShell
-import static com.yoyohr.environment.PipelineEnv.GroupPhp
-import static com.yoyohr.environment.PipelineEnv.GroupJava
-import static com.yoyohr.environment.PipelineEnv.GroupGo
+
+import static com.yoyohr.environment.PipelineEnv.PipelineGroupShellSpec
+import static com.yoyohr.environment.PipelineEnv.PipelineGroupPhpSpec
+import static com.yoyohr.environment.PipelineEnv.PipelineGroupJavaSpec
+import static com.yoyohr.environment.PipelineEnv.PipelineGroupGoSpec
 import com.yoyohr.shellSpecPipeline
-import com.yoyohr.javaSpecTestPipeline
-import com.yoyohr.javaSpecReleasePipeline
-import com.yoyohr.phpSpecTestPipeline
-import com.yoyohr.phpSpecReleasePipeline
-import com.yoyohr.goSpecTestPipeline
-import com.yoyohr.goSpecReleasePipeline
+import com.yoyohr.javaSpecPipeline
+import com.yoyohr.phpSpecPipeline
+import com.yoyohr.goSpecPipeline
 import com.yoyohr.unknowPipeline
 
 /**
@@ -42,17 +38,10 @@ def call() {
     def buildEnv = "$params.BUILD_ENV"
     // =========================================================================
     factory = [
-            "${GroupShell}-${BuildTest}"   : new shellSpecPipeline(),
-            "${GroupShell}-${BuildRelease}": new shellSpecPipeline(),
-
-            "${GroupPhp}-${BuildTest}"     : new phpSpecTestPipeline(),
-            "${GroupPhp}-${BuildRelease}"  : new phpSpecReleasePipeline(),
-
-            "${GroupJava}-${BuildTest}"    : new javaSpecTestPipeline(),
-            "${GroupJava}-${BuildRelease}" : new javaSpecReleasePipeline(),
-
-            "${GroupGo}-${BuildTest}"      : new goSpecTestPipeline(),
-            "${GroupGo}-${BuildRelease}"   : new goSpecReleasePipeline()
+            "${PipelineGroupShellSpec}": new shellSpecPipeline(),
+            "${PipelineGroupPhpSpec}"  : new phpSpecPipeline(),
+            "${PipelineGroupJavaSpec}" : new javaSpecPipeline(),
+            "${PipelineGroupGoSpec}": new goSpecPipeline()
     ]
 
 
@@ -114,7 +103,7 @@ def call() {
             notice('Pipeline Information', pipelineInformation)
 
             try {
-                doRunPipeline(yamlConf, buildEnv)
+                doRunPipeline(yamlConf)
             }
 
 //            catch (Exception e) {
@@ -131,18 +120,17 @@ def call() {
 /**
  * 按照顺序执行Pipeline
  * @param yamlConf
- * @param buildEnv
  * @return
  */
-def doRunPipeline(yamlConf, buildEnv) {
-    def pipelineGroup = "${GroupShell}"
+def doRunPipeline(yamlConf) {
+    def pipelineGroup = "${PipelineGroupShellSpec}"
     if (yamlConf != null) {
         pipelineGroup = dataGet(yamlConf, "pipeline")
     }
-    echo "Using build: ${pipelineGroup}-${buildEnv}"
+    echo "Using build: ${pipelineGroup}"
     def pipeline = null
-    if (factory.containsKey("${pipelineGroup}-${buildEnv}")) {
-        pipeline = factory.get("${pipelineGroup}-${buildEnv}")
+    if (factory.containsKey("${pipelineGroup}")) {
+        pipeline = factory.get("${pipelineGroup}")
     } else {
         pipeline = new unknowPipeline()
     }

@@ -1,6 +1,6 @@
 package com.yoyohr
 /**
- * <p>php项目生产环境标准构建流程</p>
+ * <p>php项目标准构建流程</p>
  *
  * @author nekoimi 2022/05/29
  */
