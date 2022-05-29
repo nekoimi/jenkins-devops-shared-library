@@ -13,7 +13,7 @@ import com.yoyohr.unknowPipeline
  * @author nekoimi 2022/05/28
  */
 
-def call(url = "", barch = "") {
+def call() {
     // jenkins上devops的git账号凭据ID
     def gitDevOpsId = "5a8151d1-6d6b-4160-8f32-122a9e9a74ba"
     def workspace = "$env.workspace"
