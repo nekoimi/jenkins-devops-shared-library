@@ -16,12 +16,14 @@ Hook 使用参见：http://code-base.yoyohr.com/kubernetes/no-jenkinsfile
     } else {
         if (build_before != null) {
             sh """
+bash -ex
 ${build_before}
 """
         }
 
         if (build_after != null) {
             sh """
+bash -ex
 ${build_after}
 """
         }
