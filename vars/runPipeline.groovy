@@ -1,6 +1,6 @@
 #!/usr/bin/groovy
-
 import com.yoyohr.environment.PipelineEnv
+import com.yoyohr.shellSpecTestPipeline
 /**
  * <p>build</p>
  *
@@ -40,8 +40,7 @@ def doRunPipeline(yamlConf, buildEnv) {
     if (yamlConf != null) {
         group = yamlConf.get("group")
     }
-    GroovyShell shell = new GroovyShell()
-    def pipeline = shell.parse(new File("com.yoyohr.shellSpecTestPipeline.groovy"))
+    def pipeline = new shellSpecTestPipeline()
     stage('Build') {
         pipeline.build()
     }
