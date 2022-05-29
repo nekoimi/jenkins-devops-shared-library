@@ -13,31 +13,29 @@ def call(url = "", barch = "") {
     workspace = "$env.workspace/"
     jobName = "${env.JOB_NAME}"
     buildId = "${env.BUILD_ID}"
-    defaultDeployScript = workspace + "deploy.sh"
-    projectYaml = workspace + "project.yaml"
+    projectYaml = "project.yaml"
     buildEnv = "$params.BUILD_ENV"
     util = new utils()
 
     stage('LoadEnv') {
-        def exists = fileExists "project.yaml"
-        println(exists)
-        if (util.fileExists(projectYaml)) {
-            runYaml()
-        } else {
+        def exists = fileExists projectYaml
+//        if (exists) {
+//            runYaml()
+//        } else {
             runShell()
-        }
+//        }
     }
 }
 
 def runYaml() {
     project = readYaml file: "project.yaml"
     loadProjectYaml = true
-    println("""
+    echo """
 Workspace: ${workspace}
 Project.yaml: ${projectYaml}
 Load Project Config: ${loadProjectYaml}
 Project Config: ${project}
-""")
+"""
 
     stage('Build') {
         println(project)
@@ -53,12 +51,12 @@ Project Config: ${project}
 
 def runShell() {
     stage('Build') {
-        // 走 deploy.sh
-        if (util.fileExists(defaultDeployScript)) {
-            sh "bash -ex deploy.sh"
-        } else {
-            echo "Default deploy.sh file does not exist!"
-        }
+        echo """
+>>>>>>>>>>>>>>>>>>>>>>>>>> Warning <<<<<<<<<<<<<<<<<<<<<<<<<<
+Warning！当前项目 project.yaml 配置文件不存在，请使用 BuildHook 完成 Build 流程。
+BuildHook 使用参见：http://code-base.yoyohr.com/kubernetes/no-jenkinsfile
+>>>>>>>>>>>>>>>>>>>>>>>>>> Warning <<<<<<<<<<<<<<<<<<<<<<<<<<
+"""
     }
 }
 
