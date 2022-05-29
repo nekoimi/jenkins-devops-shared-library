@@ -6,10 +6,26 @@ package com.yoyohr
  */
 
 def build(yamlConf) {
-    notice('Build Warning', """
+    def build_before = dataGet(yamlConf, "pipeline_hook.build_before")
+    def build_after = dataGet(yamlConf, "pipeline_hook.build_after")
+    if (build_before == null || build_after == null) {
+        notice('Build Warning', """
 Warning！当前项目 project.yaml 配置文件不存在，请使用 Hook 完成 Build 流程。
 Hook 使用参见：http://code-base.yoyohr.com/kubernetes/no-jenkinsfile
 """)
+    } else {
+        if (build_before != null) {
+            sh """
+${build_before}
+"""
+        }
+
+        if (build_after != null) {
+            sh """
+${build_after}
+"""
+        }
+    }
 }
 
 def dockerImage(yamlConf) {
