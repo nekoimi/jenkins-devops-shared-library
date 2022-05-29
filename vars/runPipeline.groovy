@@ -21,47 +21,44 @@ def call(gitUrl = "", gitBranch = "") {
     stage('LoadEnv') {
         util.lsFile()
         if (util.fileExists(projectYaml)) {
-            project = readYaml file: "project.yaml"
-            loadProjectYaml = true
+            runYaml()
         } else {
-            project = "load fail!"
-            loadProjectYaml = false
+            runShell()
         }
-        println("""
+    }
+}
+
+def runYaml() {
+    project = readYaml file: "project.yaml"
+    loadProjectYaml = true
+    println("""
 Workspace: ${workspace}
 Project.yaml: ${projectYaml}
 Load Project Config: ${loadProjectYaml}
 Project Config: ${project}
 """)
+
+    stage('Build') {
+        println(project)
+        println("build")
+
+        sh "bash -ex test.sh"
     }
 
-    if (!loadProjectYaml) {
-        stage('Build') {
-            // 走 deploy.sh
-            if (util.fileExists(defaultDeployScript)) {
-                sh "bash -ex deploy.sh"
-            } else {
-                echo "Default deploy.sh file does not exist!"
-            }
+    stage('Deploy') {
+        println("deploy")
+    }
+}
+
+def runShell() {
+    stage('Build') {
+        // 走 deploy.sh
+        if (util.fileExists(defaultDeployScript)) {
+            sh "bash -ex deploy.sh"
+        } else {
+            echo "Default deploy.sh file does not exist!"
         }
     }
-
-    // 读取项目目录下 project.yaml
-    // 解析 yaml 配置
-    // 决定后续CI/CD流程
-    else {
-        stage('Build') {
-            println(project)
-            println("build")
-
-            sh "bash -ex test.sh"
-        }
-
-        stage('Deploy') {
-            println("deploy")
-        }
-    }
-
 }
 
 return this
