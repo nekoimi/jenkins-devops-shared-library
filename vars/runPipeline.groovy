@@ -35,8 +35,7 @@ def call(url = "", barch = "") {
     stage('LoadEnv') {
         def workspaceExists = fileExists workspace
         if (!workspaceExists) {
-            sh "mkdir -p ${workspace}"
-            sh "cp -rf ${workspace}@script/* ${workspace}/"
+            checkout scm
         }
 
         factory.each { k, v ->
