@@ -17,7 +17,8 @@ def call(url = "", barch = "") {
     def factory = new PipelineFactory()
 
     stage('LoadEnv') {
-        println(echo)
+        invokeMethod("echo", "aaa")
+
         def exists = fileExists projectYaml
         def pipeline = null
         if (exists) {
