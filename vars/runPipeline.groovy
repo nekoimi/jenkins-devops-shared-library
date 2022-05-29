@@ -45,7 +45,12 @@ def call(url = "", barch = "") {
                 echo "yamlConf: ${k} -> ${v}"
             }
         }
-        doRunPipeline(yamlConf, buildEnv)
+
+        try {
+            doRunPipeline(yamlConf, buildEnv)
+        } finally {
+            cleanWs()
+        }
     }
 }
 
