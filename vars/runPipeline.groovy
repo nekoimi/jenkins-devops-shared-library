@@ -16,7 +16,7 @@ import com.yoyohr.unknowPipeline
 def call(url = "", barch = "") {
     // jenkins上devops的git账号凭据ID
     def gitDevOpsId = "5a8151d1-6d6b-4160-8f32-122a9e9a74ba"
-    def workspace = "$env.workspace/"
+    def workspace = "$env.workspace"
     def jobName = "${env.JOB_NAME}"
     def buildId = "${env.BUILD_ID}"
     def projectYaml = "project.yaml"
@@ -33,6 +33,12 @@ def call(url = "", barch = "") {
     ]
 
     stage('LoadEnv') {
+        def workspaceExists = fileExists workspace
+        if (!workspaceExists) {
+            sh "mkdir -p ${workspace}"
+            sh "cp -rf ${workspace}@script/* ${workspace}/"
+        }
+
         factory.each { k, v ->
             echo "factory: ${k} -> ${v}"
         }
@@ -49,7 +55,7 @@ def call(url = "", barch = "") {
         try {
             doRunPipeline(yamlConf, buildEnv)
         } finally {
-            // cleanWs()
+            cleanWs()
         }
     }
 }
