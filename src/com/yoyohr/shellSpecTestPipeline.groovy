@@ -12,11 +12,17 @@ def build(yamlConf) {
         notice('Build Warning', "Warning！请使用 Hook 完成 Build 流程。如不需要，请忽略此警告。")
     } else {
         if (hook_before != null) {
-            sh """bash -ex ${hook_before}"""
+            sh """
+bash -ex;
+${hook_before}
+"""
         }
 
         if (hook_after != null) {
-            sh """bash -ex ${hook_after}"""
+            sh """
+bash -ex;
+${hook_after}
+"""
         }
     }
 }
@@ -28,11 +34,17 @@ def dockerImage(yamlConf) {
         notice('Docker Image Warning', "Warning！请使用 Hook 完成 DockerImage 流程。如不需要，请忽略此警告。")
     } else {
         if (hook_before != null) {
-            sh """bash -ex ${hook_before}"""
+            sh """
+bash -ex;
+${hook_before}
+"""
         }
 
         if (hook_after != null) {
-            sh """bash -ex ${hook_after}"""
+            sh """
+bash -ex;
+${hook_after}
+"""
         }
     }
 }
@@ -44,11 +56,17 @@ def dockerPush(yamlConf) {
         notice('Docker Push Warning', "Warning！请使用 Hook 完成 DockerPush 流程。如不需要，请忽略此警告。")
     } else {
         if (hook_before != null) {
-            sh """bash -ex ${hook_before}"""
+            sh """
+bash -ex;
+${hook_before}
+"""
         }
 
         if (hook_after != null) {
-            sh """bash -ex ${hook_after}"""
+            sh """
+bash -ex;
+${hook_after}
+"""
         }
     }
 }
@@ -60,11 +78,17 @@ def deploy(yamlConf) {
         notice('Deploy Warning', "Warning！请使用 Hook 完成 Deploy 流程。如不需要，请忽略此警告。")
     } else {
         if (hook_before != null) {
-            sh """bash -ex ${hook_before}"""
+            sh """
+bash -ex;
+${hook_before}
+"""
         }
 
         if (hook_after != null) {
-            sh """bash -ex ${hook_after}"""
+            sh """
+bash -ex;
+${hook_after}
+"""
         }
     }
 }
