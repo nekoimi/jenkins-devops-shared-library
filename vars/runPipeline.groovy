@@ -18,91 +18,49 @@ def call(gitUrl = "", gitBranch = "") {
     def buildEnv = "$params.BUILD_ENV"
     def util = new utils()
 
-    pipeline {
-        agent any
-
-        stages {
-            stage('LoadEnv') {
-                steps {
-                    script {
-                        util.lsFile()
-                        if (util.fileExists(projectYaml)) {
-                            project = readYaml file: "project.yaml"
-                            loadProjectYaml = true
-                        } else {
-                            project = "load fail!"
-                            loadProjectYaml = false
-                        }
-                        println("""
+    stage('LoadEnv') {
+        util.lsFile()
+        if (util.fileExists(projectYaml)) {
+            project = readYaml file: "project.yaml"
+            loadProjectYaml = true
+        } else {
+            project = "load fail!"
+            loadProjectYaml = false
+        }
+        println("""
 Workspace: ${workspace}
 Project.yaml: ${projectYaml}
 Load Project Config: ${loadProjectYaml}
 Project Config: ${project}
 """)
-                    }
-                }
-            }
-        }
+    }
 
-        post {
-            always {
-                script {
-                    cleanWs()
-
-                    echo "post -> always!"
-                }
-            }
-
-            success {
-                script {
-                    echo "post -> success!"
-                }
-            }
-
-            failure {
-                script {
-                    echo "post -> failed!"
-                }
+    if (!loadProjectYaml) {
+        stage('Build') {
+            // 走 deploy.sh
+            if (util.fileExists(defaultDeployScript)) {
+                sh "bash -ex deploy.sh"
+            } else {
+                echo "Default deploy.sh file does not exist!"
             }
         }
     }
-//    stage('Checkout') {
-//        if (gitUrl == "" && gitBranch == "") {
-//            checkout scm
-//        } else {
-//            git changelog: true,
-//                    branch: gitBranch,
-//                    credentialsId: gitDevOpsId,
-//                    url: gitUrl
-//        }
-//    }
 
-//    if (!loadProjectYaml) {
-//        stage('Build') {
-//            // 走 deploy.sh
-//            if (util.fileExists(defaultDeployScript)) {
-//                sh "bash -ex deploy.sh"
-//            } else {
-//                echo "Default deploy.sh file does not exist!"
-//            }
-//        }
-//    }
-//
-//    // 读取项目目录下 project.yaml
-//    // 解析 yaml 配置
-//    // 决定后续CI/CD流程
-//    else {
-//        stage('Build') {
-//            println(project)
-//            println("build")
-//
-//            sh "bash -ex test.sh"
-//        }
-//
-//        stage('Deploy') {
-//            println("deploy")
-//        }
-//    }
+    // 读取项目目录下 project.yaml
+    // 解析 yaml 配置
+    // 决定后续CI/CD流程
+    else {
+        stage('Build') {
+            println(project)
+            println("build")
+
+            sh "bash -ex test.sh"
+        }
+
+        stage('Deploy') {
+            println("deploy")
+        }
+    }
 
 }
 
