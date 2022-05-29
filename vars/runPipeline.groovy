@@ -4,8 +4,6 @@ import static com.yoyohr.environment.PipelineEnv.BuildRelease
 import static com.yoyohr.environment.PipelineEnv.GroupShell
 import static com.yoyohr.environment.PipelineEnv.GroupPhp
 import static com.yoyohr.environment.PipelineEnv.GroupJava
-import static com.yoyohr.utils.Utils.lsFile
-import static com.yoyohr.utils.Utils.rmFile
 import com.yoyohr.shellSpecTestPipeline
 import com.yoyohr.unknowPipeline
 
@@ -56,7 +54,7 @@ def call(url = "", barch = "") {
         }
         notice('Pipeline Information', pipelineInformation)
         // ls
-        lsFile()
+        sh "ls -l"
 
         try {
             doRunPipeline(yamlConf, buildEnv)
