@@ -21,7 +21,6 @@ def call(url = "", barch = "") {
     def buildId = "${env.BUILD_ID}"
     def projectYaml = "project.yaml"
     def buildEnv = "$params.BUILD_ENV"
-    pipeline = new unknowPipeline()
     factory = [
             "${GroupShell}-${BuildTest}": new shellSpecTestPipeline(),
             "${GroupShell}-${BuildRelease}": new shellSpecTestPipeline(),
@@ -61,9 +60,12 @@ def doRunPipeline(yamlConf, buildEnv) {
     if (yamlConf != null) {
         group = yamlConf.get("group")
     }
-
+    echo "${group}-${buildEnv}"
+    def pipeline = null
     if (factory.containsKey("${group}-${buildEnv}")) {
         pipeline = factory.get("${group}-${buildEnv}")
+    } else {
+        pipeline = new unknowPipeline()
     }
 
     stage('Build') {
