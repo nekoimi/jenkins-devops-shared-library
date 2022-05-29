@@ -19,16 +19,16 @@ def call(gitUrl = "", gitBranch = "") {
     def util = new utils()
     def buildEnv = "$params.BUILD_ENV"
 
-    stage('Checkout') {
-        if (gitUrl == "" && gitBranch == "") {
-            checkout scm
-        } else {
-            git changelog: true,
-                    branch: gitBranch,
-                    credentialsId: gitDevOpsId,
-                    url: gitUrl
-        }
-    }
+//    stage('Checkout') {
+//        if (gitUrl == "" && gitBranch == "") {
+//            checkout scm
+//        } else {
+//            git changelog: true,
+//                    branch: gitBranch,
+//                    credentialsId: gitDevOpsId,
+//                    url: gitUrl
+//        }
+//    }
 
     stage('LoadEnv') {
         util.lsFile()
