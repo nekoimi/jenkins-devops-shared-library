@@ -52,9 +52,10 @@ def call(url = "", barch = "") {
                 pipelineInformation = pipelineInformation.concat("${k} -> ${v}\n")
             }
         }
-        notice('Pipeline Information', pipelineInformation)
         // ls
         sh "ls -l"
+
+        notice('Pipeline Information', pipelineInformation)
 
         try {
             doRunPipeline(yamlConf, buildEnv)
