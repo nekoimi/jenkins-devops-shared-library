@@ -1,5 +1,5 @@
 #!groovy
 
 node {
-    runPipeline("", "master")
+    runPipeline url: '', barch: ''
 }

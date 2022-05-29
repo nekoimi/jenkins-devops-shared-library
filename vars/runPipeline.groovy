@@ -7,7 +7,7 @@ import com.yoyohr.utils
  * @author nekoimi 2022/05/28
  */
 
-def call(gitUrl = "", gitBranch = "") {
+def call(url = "", barch = "") {
     // jenkins上devops的git账号凭据ID
     def gitDevOpsId = "5a8151d1-6d6b-4160-8f32-122a9e9a74ba"
     def workspace = "$env.workspace/"
@@ -19,7 +19,6 @@ def call(gitUrl = "", gitBranch = "") {
     def util = new utils()
 
     stage('LoadEnv') {
-        util.lsFile()
         if (util.fileExists(projectYaml)) {
             runYaml()
         } else {
