@@ -5,6 +5,9 @@
  */
 
 def call(text = "") {
+    println(text)
+    println(text.getMetaClass())
+    println(text.getClass())
     echo """
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> Warning <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 ${text}
