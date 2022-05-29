@@ -88,7 +88,7 @@ def call() {
 
         // Docker image
         def dockerImage = "${projectGroup}/${projectName}:${projectVersion}-${buildEnv}"
-        def dockerRegistryImage = "${dockerRegistry.replaceFirst("[(http://)|(https://)]", "")}/${dockerImage}"
+        def dockerRegistryImage = "${dockerRegistry.replaceFirst("(http://)|(https://)", "")}/${dockerImage}"
 
         // Run with environment
         withEnv([
