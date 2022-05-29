@@ -1,5 +1,6 @@
 #!/usr/bin/groovy
-import com.yoyohr.PipelineFactory
+
+import com.yoyohr.environment.PipelineEnv
 /**
  * <p>build</p>
  *
@@ -14,31 +15,32 @@ def call(url = "", barch = "") {
     def buildId = "${env.BUILD_ID}"
     def projectYaml = "project.yaml"
     def buildEnv = "$params.BUILD_ENV"
-    def factory = new PipelineFactory()
 
     stage('LoadEnv') {
-        invokeMethod("noticeWarning", "aaa")
-
+        def yamlData = null
         def exists = fileExists projectYaml
-        def pipeline = null
         if (exists) {
-            def project = readYaml file: "project.yaml"
-            println(project.getClass())
-            pipeline = factory.of(project, buildEnv)
-        } else {
-            pipeline = factory.ofShellPipeline(buildEnv)
+            yamlData = readYaml file: "project.yaml"
+            yamlData.each{ k, v ->
+                echo "yamlConf: ${k} -> ${v}"
+            }
         }
-        // Run
-        doRunPipeline(pipeline)
+        doRunPipeline(yamlData, buildEnv)
     }
 }
 
 /**
  * 按照顺序执行Pipeline
- * @param pipeline
+ * @param yamlConf
+ * @param buildEnv
  * @return
  */
-def doRunPipeline(pipeline) {
+def doRunPipeline(yamlConf, buildEnv) {
+    def pipelineGroup = "${PipelineEnv.GroupShell}"
+    if (yamlConf != null) {
+        pipelineGroup = yamlConf.get("group")
+    }
+
     stage('Build') {
         pipeline.build()
     }
