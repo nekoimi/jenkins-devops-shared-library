@@ -1,5 +1,5 @@
 #!/usr/bin/groovy
-
+import com.github.javaparser.utils.ClassUtils
 import com.yoyohr.environment.PipelineEnv
 /**
  * <p>build</p>
@@ -17,15 +17,15 @@ def call(url = "", barch = "") {
     def buildEnv = "$params.BUILD_ENV"
 
     stage('LoadEnv') {
-        def yamlData = null
+        def yamlConf = null
         def exists = fileExists projectYaml
         if (exists) {
-            yamlData = readYaml file: "project.yaml"
-            yamlData.each{ k, v ->
+            yamlConf = readYaml file: "project.yaml"
+            yamlConf.each{ k, v ->
                 echo "yamlConf: ${k} -> ${v}"
             }
         }
-        doRunPipeline(yamlData, buildEnv)
+        doRunPipeline(yamlConf, buildEnv)
     }
 }
 
@@ -36,11 +36,12 @@ def call(url = "", barch = "") {
  * @return
  */
 def doRunPipeline(yamlConf, buildEnv) {
-    def pipelineGroup = "${PipelineEnv.GroupShell}"
+    def group = "${PipelineEnv.GroupShell}"
     if (yamlConf != null) {
-        pipelineGroup = yamlConf.get("group")
+        group = yamlConf.get("group")
     }
-
+    GroovyShell shell = new GroovyShell()
+    def pipeline = shell.parse(new File("com.yoyohr.shellSpecTestPipeline.groovy"))
     stage('Build') {
         pipeline.build()
     }
