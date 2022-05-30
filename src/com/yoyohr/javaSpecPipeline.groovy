@@ -83,8 +83,12 @@ if [ -f "${k8sValueYaml}" ]; then
     
     if [ -e "${MY_WORKSPACE}/helm-charts/${projectName}" ]; then
         mv ${k8sValueYaml} ${MY_WORKSPACE}/helm-charts/${projectName}/values.yaml
-        
-        echo '' > ${MY_WORKSPACE}/helm-charts/${projectName}/upgrade.yaml
+
+        cat >> ${MY_WORKSPACE}/helm-charts/${projectName}/values.yaml <<EOF
+image:
+    repository: ${dockerRepository}
+    tag: "${dockerTag}"
+EOF
 
         cat > ${MY_WORKSPACE}/helm-charts/${projectName}/upgrade.yaml <<EOF
 image:
