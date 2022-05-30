@@ -109,16 +109,20 @@ fi
     server.allowAnyHosts= true
     withCredentials([sshUserPrivateKey(
             credentialsId: "${MY_K8S_ID}",
-            usernameVariable: 'user',
-            keyFileVariable: 'identity')]) {
-        server.user = user
-        server.identityFile = identity
+            usernameVariable: 'serverUser',
+            keyFileVariable: 'serverIdentity')]) {
+        server.user = serverUser
+        server.identityFile = serverIdentity
         // -------------------------------------------------------
         sshCommand remote: server, command: """
 cd /mnt
 
 if [ ! -e "\$PWD/helm-charts" ]; then
     git clone ${MY_GIT_HELM_CHARTS_URL} helm-charts && ls -l "\$PWD/helm-charts"
+fi
+
+if [ ! -e "\\$PWD/helm-charts/${MY_PROJECT_NAME}" ]; then
+    git pull origin master
 fi
 
 if [ -e "\$PWD/helm-charts/${MY_PROJECT_NAME}" ]; then
