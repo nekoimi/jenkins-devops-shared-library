@@ -123,19 +123,17 @@ fi
 
 cd \$PWD/helm-charts && git pull origin master
 
-if [ -e "\$PWD/helm-charts/${MY_PROJECT_NAME}" ]; then
+if [ -e "\$PWD/${MY_PROJECT_NAME}" ]; then
     status=\$(helm list --all --time-format "2006-01-02" --filter "${MY_PROJECT_NAME}" | sed -n '2p' | awk '{print \$5}')
     
     if [ status == 'deployed' ]; then
         echo 'Upgrade Chart ......'
         
-        cd "\$PWD/helm-charts/${MY_PROJECT_NAME}"
+        cd "\$PWD/${MY_PROJECT_NAME}"
         
         helm upgrade -f upgrade.yaml ${MY_PROJECT_NAME} "${MY_PROJECT_NAME}/"
     else
         echo 'Install Chart ......'
-        
-        cd "\$PWD/helm-charts"
         
         helm install ${MY_PROJECT_NAME} "${MY_PROJECT_NAME}/"
     fi
