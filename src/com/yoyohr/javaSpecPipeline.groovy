@@ -111,8 +111,6 @@ fi
         server.identityFile = identity
         // -------------------------------------------------------
         sshCommand remote: server, command: """
-bash -ex;
-
 status=\$(helm list --all --time-format "2006-01-02" --filter "${MY_PROJECT_NAME}" | sed -n '2p' | awk '{print \$5}')
 
 if [ status == 'deployed' ]; then
