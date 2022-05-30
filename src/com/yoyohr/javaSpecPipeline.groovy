@@ -132,13 +132,13 @@ cd \$PWD/helm-charts && git pull origin master
 if [ -e "\$PWD/${MY_PROJECT_NAME}" ]; then
     status=\$(helm list --all --time-format "2006-01-02" --filter "${MY_PROJECT_NAME}" | sed -n '2p' | awk '{print \$5}' | sed s/[[:space:]]//g)
     
-    if [ status == 'failed' ]; then
+    if [ \${status} == 'failed' ]; then
         echo 'Uninstall Chart ......'
         
         helm uninstall ${MY_PROJECT_NAME}
     fi
     
-    if [ status == 'deployed' ]; then
+    if [ \${status} == 'deployed' ]; then
         echo 'Upgrade Chart ......'
         
         cd "\$PWD/${MY_PROJECT_NAME}"
@@ -169,8 +169,6 @@ bash -ex;
 ${hook_before}
 """
     }
-
-    echo "${IS_TEST}"
 
     if ("${IS_TEST}" == "true") {
         deployTestToKubernetes()
