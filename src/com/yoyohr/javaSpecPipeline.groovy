@@ -130,7 +130,7 @@ fi
 cd \$PWD/helm-charts && git pull origin master
 
 if [ -e "\$PWD/${MY_PROJECT_NAME}" ]; then
-    status=\$(helm list --all --time-format "2006-01-02" --filter "${MY_PROJECT_NAME}" | sed -n '2p' | awk '{print \$5}')
+    status=\$(helm list --all --time-format "2006-01-02" --filter "${MY_PROJECT_NAME}" | sed -n '2p' | awk '{print \$5}' | sed s/[[:space:]]//g)
     
     if [ status == 'failed' ]; then
         echo 'Uninstall Chart ......'
