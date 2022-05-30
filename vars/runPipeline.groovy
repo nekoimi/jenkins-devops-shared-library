@@ -36,6 +36,8 @@ def call() {
     def projectYaml = "project.yaml"
     // 项目构建环境
     def buildEnv = "$params.BUILD_ENV"
+    // Git helm-charts 仓库地址，专门存放管理helm-charts的仓库地址
+    def gitHelmChartsUrl = "http://code-base.yoyohr.com/kubernetes/helm-charts.git"
     // =========================================================================
     factory = [
             "${PipelineGroupShellSpec}": new shellSpecPipeline(),
@@ -86,6 +88,7 @@ def call() {
                 "MY_PWD=${myPwd}",
                 "MY_BUILD_ENV=${buildEnv}",
                 "MY_GIT_ID=${gitCredentialId}",
+                "MY_GIT_HELM_CHARTS_URL=${gitHelmChartsUrl}",
                 "MY_DOCKER_REGISTRY=${dockerRegistry}",
                 "MY_DOCKER_REGISTRY_ID=${dockerRegistryId}",
                 "MY_DOCKER_IMAGE=${dockerImage}",

@@ -55,9 +55,9 @@ ${hook_before}
 """
     }
 
-    docker.withRegistry("${MY_DOCKER_REGISTRY}", "${MY_DOCKER_REGISTRY_ID}") {
-        docker.build("${MY_PROJECT_GROUP}/${MY_PROJECT_NAME}").push("${MY_PROJECT_VERSION}-${MY_BUILD_ENV}")
-    }
+//    docker.withRegistry("${MY_DOCKER_REGISTRY}", "${MY_DOCKER_REGISTRY_ID}") {
+//        docker.build("${MY_PROJECT_GROUP}/${MY_PROJECT_NAME}").push("${MY_PROJECT_VERSION}-${MY_BUILD_ENV}")
+//    }
 
     if (hook_after != null) {
         sh """
@@ -68,7 +68,17 @@ ${hook_after}
 }
 
 def helm(yamlConf) {
-    noticeWarning("Warning！构建流程不支持。")
+    withCredentials([gitUsernamePassword(credentialsId: "${MY_GIT_ID}")]) {
+        sh """
+bash -ex;
+
+git clone \${MY_GIT_HELM_CHARTS_URL} helm-charts
+
+ls -l
+
+ls -l helm-charts        
+"""
+    }
 }
 
 def deploy(yamlConf) {
