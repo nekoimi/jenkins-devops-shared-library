@@ -1,4 +1,5 @@
 #!/usr/bin/groovy
+import com.yoyohr.environment.PipelineEnv
 
 import static com.yoyohr.environment.PipelineEnv.PipelineGroupShellSpec
 import static com.yoyohr.environment.PipelineEnv.PipelineGroupPhpSpec
@@ -24,6 +25,10 @@ def call() {
     def dockerRegistryId = "dockerRegistryCredential"
     // docker registry 地址
     def dockerRegistry = "http://registry.youpin-k8s.net"
+    // k8s api server 证书ID，证书生成：ssh-keygen -t rsa -b 4096
+    def k8sCredential = "k8sCredential"
+    // k8s api server host
+    def k8sHost = "192.168.2.209"
     // 当前工作控件
     def workspace = "${env.workspace}"
     // 任务名称
@@ -43,7 +48,7 @@ def call() {
             "${PipelineGroupShellSpec}": new shellSpecPipeline(),
             "${PipelineGroupPhpSpec}"  : new phpSpecPipeline(),
             "${PipelineGroupJavaSpec}" : new javaSpecPipeline(),
-            "${PipelineGroupGoSpec}": new goSpecPipeline()
+            "${PipelineGroupGoSpec}"   : new goSpecPipeline()
     ]
 
 
@@ -81,8 +86,14 @@ def call() {
         def dockerImage = "${projectGroup}/${projectName}:${projectVersion}.${buildId}-${buildEnv}"
         def dockerRegistryImage = "${dockerRegistry.replaceFirst("(http://)|(https://)", "")}/${dockerImage}"
 
+        // Build env
+        def isTest = (buildEnv == PipelineEnv.BuildTest)
+        def isRelease = (buildEnv == PipelineEnv.BuildRelease)
+
         // Run with environment
         withEnv([
+                "IS_TEST=${isTest}",
+                "IS_RELEASE=${isRelease}",
                 "MY_WORKSPACE=${workspace}",
                 "MY_JOB_NAME=${jobName}",
                 "MY_BUILD_ID=${buildId}",
@@ -90,6 +101,8 @@ def call() {
                 "MY_BUILD_ENV=${buildEnv}",
                 "MY_GIT_ID=${gitCredentialId}",
                 "MY_GIT_HELM_CHARTS_URL=${gitHelmChartsUrl}",
+                "MY_K8S_ID=${k8sCredential}",
+                "MY_K8S_HOST=${k8sHost}",
                 "MY_DOCKER_REGISTRY=${dockerRegistry}",
                 "MY_DOCKER_REGISTRY_ID=${dockerRegistryId}",
                 "MY_DOCKER_IMAGE=${dockerImage}",
@@ -149,10 +162,6 @@ def doRunPipeline(yamlConf) {
 
     stage('Build And Push Image') {
         pipeline.docker(yamlConf)
-    }
-
-    stage('Helm') {
-        pipeline.helm(yamlConf)
     }
 
     stage('Deploy To Kubernetes') {

@@ -67,7 +67,28 @@ ${hook_after}
     }
 }
 
-def helm(yamlConf) {
+def deployTestToKubernetes() {
+    def server = [:]
+    server.name = "api-server"
+    server.host = "${MY_K8S_HOST}"
+    server.allowAnyHosts= true
+    withCredentials([sshUserPrivateKey(
+            credentialsId: "${MY_K8S_ID}",
+            usernameVariable: 'user',
+            keyFileVariable: 'identity')]) {
+        server.user = user
+        server.identityFile = identity
+        // -------------------------------------------------------
+        sshCommand remote: server, command: """
+bash -ex;
+
+chartStatus=\$(helm list --all --time-format "2006-01-02" --filter "${MY_PROJECT_NAME}" | sed -n '2p' | awk '{print \$5}')
+
+echo chartStatus
+"""
+    }
+
+
     withCredentials([gitUsernamePassword(credentialsId: "${MY_GIT_ID}")]) {
         sh """
 bash -ex;
@@ -90,6 +111,14 @@ def deploy(yamlConf) {
 bash -ex;
 ${hook_before}
 """
+    }
+
+    if (${IS_TEST}) {
+        deployTestToKubernetes()
+    }
+
+    if (${IS_RELEASE}) {
+        notice('生产环境部署', '生产环境忽略部署')
     }
 
     if (hook_after != null) {
