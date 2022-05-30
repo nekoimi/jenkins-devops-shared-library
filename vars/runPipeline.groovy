@@ -78,13 +78,14 @@ def call() {
         }
 
         // Docker image
-        def dockerImage = "${projectGroup}/${projectName}:${projectVersion}-${buildEnv}"
+        def dockerImage = "${projectGroup}/${projectName}:${projectVersion}.${buildId}-${buildEnv}"
         def dockerRegistryImage = "${dockerRegistry.replaceFirst("(http://)|(https://)", "")}/${dockerImage}"
 
         // Run with environment
         withEnv([
                 "MY_WORKSPACE=${workspace}",
                 "MY_JOB_NAME=${jobName}",
+                "MY_BUILD_ID=${buildId}",
                 "MY_PWD=${myPwd}",
                 "MY_BUILD_ENV=${buildEnv}",
                 "MY_GIT_ID=${gitCredentialId}",
