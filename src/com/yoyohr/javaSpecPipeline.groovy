@@ -69,7 +69,7 @@ ${hook_after}
 
 def deployTestToKubernetes() {
     def projectName = "${MY_PROJECT_NAME}"
-    def k8sValueYaml = "k8s/${MY_BUILD_ENV}-values.yaml"
+    def k8sValueYaml = "${MY_WORKSPACE}/k8s/${MY_BUILD_ENV}-values.yaml"
     // 更新 Helm values.yaml 文件
     withCredentials([gitUsernamePassword(credentialsId: "${MY_GIT_ID}")]) {
         sh """
@@ -80,11 +80,11 @@ if [ -f "${k8sValueYaml}" ]; then
 
     ls -l helm-charts
     
-    if [ -f "helm-charts/${projectName}" ]; then
-        if [ -f "helm-charts/${projectName}/values.yaml" ]; then
-            rm -rf helm-charts/${projectName}/values.yaml
+    if [ -e "${MY_WORKSPACE}/helm-charts/${projectName}" ]; then
+        if [ -f "${MY_WORKSPACE}/helm-charts/${projectName}/values.yaml" ]; then
+            rm -rf ${MY_WORKSPACE}/helm-charts/${projectName}/values.yaml
 
-            mv ${k8sValueYaml} helm-charts/${projectName}/values.yaml
+            mv ${k8sValueYaml} ${MY_WORKSPACE}/helm-charts/${projectName}/values.yaml
 
             cd helm-charts
             
