@@ -68,6 +68,37 @@ ${hook_after}
 }
 
 def deployTestToKubernetes() {
+    def projectName = "${MY_PROJECT_NAME}"
+    def k8sValueYaml = "k8s/${MY_BUILD_ENV}-values.yaml"
+    // 更新 Helm values.yaml 文件
+    withCredentials([gitUsernamePassword(credentialsId: "${MY_GIT_ID}")]) {
+        sh """
+bash -ex;
+
+if [ -f "${k8sValueYaml}" ]; then
+    git clone \${MY_GIT_HELM_CHARTS_URL} helm-charts
+
+    ls -l helm-charts
+    
+    if [ -f "helm-charts/${projectName}" ]; then
+        if [ -f "helm-charts/${projectName}/values.yaml" ]; then
+            rm -rf helm-charts/${projectName}/values.yaml
+
+            mv ${k8sValueYaml} helm-charts/${projectName}/values.yaml
+
+            cd helm-charts
+            
+            git add . && git commit -m "${MY_JOB_NAME}-${MY_BUILD_ENV}-${MY_BUILD_ID}" && git push origin master
+        fi
+    else
+        echo 'Warning! 项目缺少helm部署chart！'
+    fi
+else
+    echo 'Warning! 项目缺少k8s部署配置文件！'
+fi
+"""
+    }
+
     def server = [:]
     server.name = "api-server"
     server.host = "${MY_K8S_HOST}"
@@ -82,22 +113,13 @@ def deployTestToKubernetes() {
         sshCommand remote: server, command: """
 bash -ex;
 
-chartStatus=\$(helm list --all --time-format "2006-01-02" --filter "${MY_PROJECT_NAME}" | sed -n '2p' | awk '{print \$5}')
+status=\$(helm list --all --time-format "2006-01-02" --filter "${MY_PROJECT_NAME}" | sed -n '2p' | awk '{print \$5}')
 
-echo chartStatus
-"""
-    }
-
-
-    withCredentials([gitUsernamePassword(credentialsId: "${MY_GIT_ID}")]) {
-        sh """
-bash -ex;
-
-git clone \${MY_GIT_HELM_CHARTS_URL} helm-charts
-
-ls -l
-
-ls -l helm-charts        
+if [ status == 'deployed' ]; then
+    echo 'deployed'
+else
+    echo 'undeployed'
+fi
 """
     }
 }
