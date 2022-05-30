@@ -89,7 +89,6 @@ if [ -f "${k8sValueYaml}" ]; then
         cat > ${MY_WORKSPACE}/helm-charts/${projectName}/upgrade.yaml <<EOF
 image:
     repository: ${dockerRepository}
-    pullPolicy: Alawys
     tag: "${dockerTag}"
 EOF
 
