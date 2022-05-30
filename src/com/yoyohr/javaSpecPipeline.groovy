@@ -82,7 +82,7 @@ def deployTestToKubernetes() {
         sshCommand remote: server, command: """
 bash -ex;
 
-chartStatus=\$(helm list --all --time-format "2006-01-02" --filter "\${MY_PROJECT_NAME}" | sed -n '2p' | awk '{print \$5}')
+chartStatus=\$(helm list --all --time-format "2006-01-02" --filter "${MY_PROJECT_NAME}" | sed -n '2p' | awk '{print \$5}')
 
 echo chartStatus
 """
@@ -113,11 +113,11 @@ ${hook_before}
 """
     }
 
-    if (${IS_TEST}) {
+    if ("${IS_TEST}") {
         deployTestToKubernetes()
     }
 
-    if (${IS_RELEASE}) {
+    if ("${IS_RELEASE}") {
         notice('生产环境部署', '生产环境忽略部署')
     }
 
