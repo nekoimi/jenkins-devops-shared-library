@@ -143,7 +143,7 @@ if [ -e "\$PWD/${MY_PROJECT_NAME}" ]; then
         
         cd "\$PWD/${MY_PROJECT_NAME}"
         
-        helm upgrade -f upgrade.yaml ${MY_PROJECT_NAME} "${MY_PROJECT_NAME}/"
+        helm upgrade -f upgrade.yaml ${MY_PROJECT_NAME} .
     else
         echo 'Install Chart ......'
         
