@@ -1,4 +1,7 @@
 package com.yoyohr
+
+import com.yoyohr.environment.PipelineEnv
+
 /**
  * <p>java项目标准构建流程</p>
  *
@@ -161,11 +164,13 @@ ${hook_before}
 """
     }
 
-    if ("${IS_TEST}") {
+    echo "${IS_TEST}"
+
+    if ("${IS_TEST}" == "true") {
         deployTestToKubernetes()
     }
 
-    if ("${IS_RELEASE}") {
+    if ("${IS_RELEASE}" == "true") {
         notice('生产环境部署', '生产环境忽略部署')
     }
 
