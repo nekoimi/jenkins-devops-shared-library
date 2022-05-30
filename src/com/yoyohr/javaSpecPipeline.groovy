@@ -82,9 +82,7 @@ if [ -f "${k8sValueYaml}" ]; then
     git clone \${MY_GIT_HELM_CHARTS_URL} helm-charts && ls -l helm-charts
     
     if [ -e "${MY_WORKSPACE}/helm-charts/${projectName}" ]; then
-        if [ ! -f "${MY_WORKSPACE}/helm-charts/${projectName}/values.yaml" ]; then
-            mv ${k8sValueYaml} ${MY_WORKSPACE}/helm-charts/${projectName}/values.yaml
-        fi
+        mv ${k8sValueYaml} ${MY_WORKSPACE}/helm-charts/${projectName}/values.yaml
         
         echo '' > ${MY_WORKSPACE}/helm-charts/${projectName}/upgrade.yaml
 
