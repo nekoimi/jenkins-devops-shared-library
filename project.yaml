@@ -1,19 +1,19 @@
 # 项目名称，唯一，尽量简洁，不要太长，后续 docker image tag、yaml配置、部署相关会用到
-name: is-account
+name: java-project
 # 项目版本号，遵循 Semver 规范 (https://semver.org) -> 主版本号.次版本号.修订号 ，docker image tag、yaml配置
-version: 0.0.36
+version: 0.0.1
 # 项目简介，唯一，docker image tag、yaml配置
-description: 账户服务
+description: 项目简介
 # 项目语言
 program_language: java
 # 项目分组，给项目分类，相同分类的项目docker image会放在同一个分组下
-group: java-project
+group: java-repos
 # 项目构建流程
 # shell-spec: 标准shell构建，完全使用hook来组装流程
 # php-spec: 标准php构建，php-fpm + nginx -> docker
 # java-spec: 标准java侯建，java-jar -> docker
 pipeline: shell-spec
-# 构建hook, 用来扩展增强构建流程
+# Hook，直接执行 shell，用来扩展增强构建流程
 pipeline_hook:
   build_before: |
     echo 'hook:build_before'
