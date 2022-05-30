@@ -139,7 +139,7 @@ def doRunPipeline(yamlConf) {
         pipeline = new unknowPipeline()
     }
 
-    stage('Build Project') {
+    stage('Project Build') {
         pipeline.build(yamlConf)
     }
 
