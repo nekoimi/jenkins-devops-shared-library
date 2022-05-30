@@ -45,7 +45,7 @@ def call() {
     ]
 
 
-    stage('LoadEnv') {
+    stage('Load Env') {
         def workspaceExists = fileExists workspace
         if (!workspaceExists) {
             checkout scm
@@ -135,16 +135,28 @@ def doRunPipeline(yamlConf) {
         pipeline = new unknowPipeline()
     }
 
-    stage('Build') {
+    stage('Build Project') {
         pipeline.build(yamlConf)
     }
 
-    stage('Docker') {
+    stage('Unit Testing') {
+        pipeline.unitTesting(yamlConf)
+    }
+
+    stage('Build And Push Image') {
         pipeline.docker(yamlConf)
     }
 
-    stage('Deploy') {
+    stage('Helm') {
+        pipeline.helm(yamlConf)
+    }
+
+    stage('Deploy To Kubernetes') {
         pipeline.deploy(yamlConf)
+    }
+
+    stage('Testing') {
+        pipeline.testing(yamlConf)
     }
 }
 

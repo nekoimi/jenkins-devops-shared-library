@@ -40,6 +40,10 @@ ${hook_after}
     }
 }
 
+def unitTesting(yamlConf) {
+    noticeWarning("Warning！构建流程不支持。")
+}
+
 def docker(yamlConf) {
     def hook_before = dataGet(yamlConf, "pipeline_hook.docker_before")
     def hook_after = dataGet(yamlConf, "pipeline_hook.docker_after")
@@ -63,6 +67,10 @@ ${hook_after}
     }
 }
 
+def helm(yamlConf) {
+    noticeWarning("Warning！构建流程不支持。")
+}
+
 def deploy(yamlConf) {
     def hook_before = dataGet(yamlConf, "pipeline_hook.deploy_before")
     def hook_after = dataGet(yamlConf, "pipeline_hook.deploy_after")
@@ -80,4 +88,8 @@ bash -ex;
 ${hook_after}
 """
     }
+}
+
+def testing(yamlConf) {
+    noticeWarning("Warning！构建流程不支持。")
 }
