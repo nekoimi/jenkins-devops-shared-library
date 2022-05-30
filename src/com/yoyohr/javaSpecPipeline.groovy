@@ -121,9 +121,7 @@ if [ ! -e "\$PWD/helm-charts" ]; then
     git clone ${MY_GIT_HELM_CHARTS_URL} helm-charts && ls -l "\$PWD/helm-charts"
 fi
 
-if [ ! -e "\\$PWD/helm-charts/${MY_PROJECT_NAME}" ]; then
-    git pull origin master
-fi
+cd \$PWD/helm-charts && git pull origin master
 
 if [ -e "\$PWD/helm-charts/${MY_PROJECT_NAME}" ]; then
     status=\$(helm list --all --time-format "2006-01-02" --filter "${MY_PROJECT_NAME}" | sed -n '2p' | awk '{print \$5}')
