@@ -48,17 +48,17 @@ def call() {
         def projectName = jobName
         def projectVersion = buildId
 
-        def pipelineInformation = ""
         def exists = fileExists projectYaml
         if (exists) {
-            pipelineInformation = pipelineInformation.concat("\nYamlConf: \n")
             yamlConf = readYaml file: "project.yaml"
             projectGroup = dataGet(yamlConf, "group")
             projectName = dataGet(yamlConf, "name")
             projectVersion = dataGet(yamlConf, "version")
+            def log = ""
             yamlConf.each { k, v ->
-                pipelineInformation = pipelineInformation.concat("${k} -> ${v}\n")
+                log = log.concat("${k} -> ${v}\n")
             }
+            notice('YamlConf', log)
         }
 
         // Docker image
@@ -93,8 +93,6 @@ def call() {
 
             // printenv
             sh "printenv"
-
-            notice('Pipeline Information', pipelineInformation)
 
             try {
                 // Run

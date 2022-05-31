@@ -22,24 +22,16 @@ def call(yamlConf) {
             "${PipelineGroupJavaSpec}" : new javaSpecPipeline(),
             "${PipelineGroupGoSpec}"   : new goSpecPipeline()
     ]
-    def log = ""
-    factory.each { k, v ->
-        log = log.concat("${k} -> ${v}\n")
-    }
-    notice('Pipeline', log)
-
-    echo "Using build: ${pipelineGroup}"
-
-    def pipelineGroup = "${PipelineGroupShellSpec}"
+    def pipelineGroup = null
     if (yamlConf != null) {
         pipelineGroup = dataGet(yamlConf, "pipeline")
     }
 
-    def pipeline = null
-    if (factory.containsKey("${pipelineGroup}")) {
-        pipeline = factory.get("${pipelineGroup}")
-    } else {
-        pipeline = new unknowPipeline()
+    def pipeline = new unknowPipeline()
+    if (pipelineGroup != null && factory.containsKey(pipelineGroup)) {
+        echo "Using build: ${pipelineGroup}"
+
+        pipeline = factory.get(pipelineGroup)
     }
 
     ///////////////////////////////////////////////////////////////////////////////////
