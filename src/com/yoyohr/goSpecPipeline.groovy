@@ -1,7 +1,4 @@
 package com.yoyohr
-
-import com.yoyohr.environment.PipelineEnv
-
 /**
  * <p>golang项目标准构建流程</p>
  *
@@ -14,15 +11,6 @@ def build(yamlConf) {
 def unitTesting(yamlConf) {
 }
 
-def docker(yamlConf) {
-    dockerBuildAndPush(yamlConf)
-}
-
-def deploy(yamlConf) {
-}
-
-def testing(yamlConf) {
-    if ("${MY_BUILD_ENV}" == PipelineEnv.BuildTest) {
-        deployTesting()
-    }
+def deployRelease(yamlConf) {
+    notice("${MY_BUILD_ENV}", '>>>>>>>>>>>>>>>>> 忽略部署 <<<<<<<<<<<<<<<<<')
 }

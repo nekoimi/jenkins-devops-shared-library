@@ -11,11 +11,6 @@ def build(yamlConf) {
 def unitTesting(yamlConf) {
 }
 
-def docker(yamlConf) {
-}
-
-def deploy(yamlConf) {
-}
-
-def testing(yamlConf) {
+def deployRelease(yamlConf) {
+    notice("${MY_BUILD_ENV}", '>>>>>>>>>>>>>>>>> 忽略部署 <<<<<<<<<<<<<<<<<')
 }

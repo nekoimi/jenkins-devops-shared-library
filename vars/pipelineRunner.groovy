@@ -1,16 +1,7 @@
-import com.yoyohr.goSpecPipeline
-import com.yoyohr.javaSpecPipeline
-import com.yoyohr.phpSpecPipeline
-import com.yoyohr.shellSpecPipeline
-import com.yoyohr.webSpecPipeline
-import com.yoyohr.unknowPipeline
+import com.yoyohr.*
+import com.yoyohr.environment.PipelineEnv
 
-import static com.yoyohr.environment.PipelineEnv.GoSpec
-import static com.yoyohr.environment.PipelineEnv.JavaSpec
-import static com.yoyohr.environment.PipelineEnv.PhpSpec
-import static com.yoyohr.environment.PipelineEnv.ShellSpec
-import static com.yoyohr.environment.PipelineEnv.WebSpec
-
+import static com.yoyohr.environment.PipelineEnv.*
 /**
  * <p>pipelineRunner</p>
  *
@@ -52,24 +43,7 @@ def call(yamlConf) {
     ///////////////////////////////////////////////////////////////////////////////////
 
     stage('Project Build') {
-        def hookBefore = dataGet(yamlConf, "pipelineHook.buildBefore")
-        def hookAfter = dataGet(yamlConf, "pipelineHook.buildAfter")
-
-        if (hookBefore != null) {
-            sh """
-bash -ex;
-${hookBefore}
-"""
-        }
-
         pipeline.build(yamlConf)
-
-        if (hookAfter != null) {
-            sh """
-bash -ex;
-${hookAfter}
-"""
-        }
     }
 
     stage('Unit Testing') {
@@ -86,7 +60,7 @@ ${hookBefore}
 """
         }
 
-        pipeline.docker(yamlConf)
+        dockerBuildAndPush(yamlConf)
 
         if (hookAfter != null) {
             sh """
@@ -106,7 +80,13 @@ ${hookBefore}
 """
         }
 
-        pipeline.deploy(yamlConf)
+        if ("${MY_BUILD_ENV}" == PipelineEnv.BuildTest) {
+            deployTestToKubernetes()
+        }
+
+        if ("${MY_BUILD_ENV}" == PipelineEnv.BuildRelease) {
+            pipeline.deployRelease(yamlConf)
+        }
 
         if (hookAfter != null) {
             sh """
@@ -117,6 +97,8 @@ ${hookAfter}
     }
 
     stage('Testing') {
-        pipeline.testing(yamlConf)
+        if ("${MY_BUILD_ENV}" == PipelineEnv.BuildTest) {
+            deployTesting()
+        }
     }
 }

@@ -16,6 +16,8 @@ group: java-repos
 pipeline: shell-spec
 # 用于build项目的docker镜像
 buildImage: maven:3.6-openjdk-11
+# 安装依赖命令
+installCommand: npm install --registry=https://registry.npmmirror.com
 # build 命令
 buildCommand: mvn clean package -Dfile.encoding=UTF-8 -DskipTests=true
 # Hook，直接执行 shell，用来扩展增强构建流程
