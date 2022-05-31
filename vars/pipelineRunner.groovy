@@ -22,13 +22,15 @@ def call(yamlConf) {
             "${PipelineGroupJavaSpec}" : new javaSpecPipeline(),
             "${PipelineGroupGoSpec}"   : new goSpecPipeline()
     ]
-    def pipelineGroup = null
+    def pipelineGroup = PipelineGroupShellSpec
     if (yamlConf != null) {
         pipelineGroup = dataGet(yamlConf, "pipeline")
     }
 
-    def pipeline = new unknowPipeline()
-    if (pipelineGroup != null && factory.containsKey(pipelineGroup)) {
+    def pipeline = null
+    if (!factory.containsKey(pipelineGroup)) {
+        pipeline = new unknowPipeline()
+    } else {
         echo "Using build: ${pipelineGroup}"
 
         pipeline = factory.get(pipelineGroup)
