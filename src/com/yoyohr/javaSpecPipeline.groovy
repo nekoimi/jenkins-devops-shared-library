@@ -46,4 +46,7 @@ def deploy(yamlConf) {
 }
 
 def testing(yamlConf) {
+    if ("${MY_BUILD_ENV}" == PipelineEnv.BuildTest) {
+        deployTesting()
+    }
 }
