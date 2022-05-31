@@ -1,16 +1,5 @@
 #!/usr/bin/groovy
 import com.yoyohr.environment.PipelineEnv
-
-import static com.yoyohr.environment.PipelineEnv.PipelineGroupShellSpec
-import static com.yoyohr.environment.PipelineEnv.PipelineGroupPhpSpec
-import static com.yoyohr.environment.PipelineEnv.PipelineGroupJavaSpec
-import static com.yoyohr.environment.PipelineEnv.PipelineGroupGoSpec
-import com.yoyohr.shellSpecPipeline
-import com.yoyohr.javaSpecPipeline
-import com.yoyohr.phpSpecPipeline
-import com.yoyohr.goSpecPipeline
-import com.yoyohr.unknowPipeline
-
 /**
  * <p>build</p>
  *
@@ -44,23 +33,12 @@ def call() {
     // Git helm-charts 仓库地址，专门存放管理helm-charts的仓库地址
     def gitHelmChartsUrl = "http://code-base.yoyohr.com/kubernetes/helm-charts.git"
     // =========================================================================
-    factory = [
-            "${PipelineGroupShellSpec}": new shellSpecPipeline(),
-            "${PipelineGroupPhpSpec}"  : new phpSpecPipeline(),
-            "${PipelineGroupJavaSpec}" : new javaSpecPipeline(),
-            "${PipelineGroupGoSpec}"   : new goSpecPipeline()
-    ]
 
 
     stage('Load Env') {
         def workspaceExists = fileExists workspace
         if (!workspaceExists) {
             checkout scm
-        }
-
-        def pipelineInformation = "Pipeline:\n"
-        factory.each { k, v ->
-            pipelineInformation = pipelineInformation.concat("${k} -> ${v}\n")
         }
 
         def yamlConf = null
@@ -70,6 +48,7 @@ def call() {
         def projectName = jobName
         def projectVersion = buildId
 
+        def pipelineInformation = ""
         def exists = fileExists projectYaml
         if (exists) {
             pipelineInformation = pipelineInformation.concat("\nYamlConf: \n")
@@ -92,8 +71,6 @@ def call() {
 
         // Run with environment
         withEnv([
-                "IS_TEST=${isTest}",
-                "IS_RELEASE=${isRelease}",
                 "MY_WORKSPACE=${workspace}",
                 "MY_JOB_NAME=${jobName}",
                 "MY_BUILD_ID=${buildId}",
@@ -120,7 +97,8 @@ def call() {
             notice('Pipeline Information', pipelineInformation)
 
             try {
-                doRunPipeline(yamlConf)
+                // Run
+                pipelineRunner(yamlConf)
             }
 
 //            catch (Exception e) {
@@ -131,45 +109,6 @@ def call() {
                 cleanWs()
             }
         }
-    }
-}
-
-/**
- * 按照顺序执行Pipeline
- * @param yamlConf
- * @return
- */
-def doRunPipeline(yamlConf) {
-    def pipelineGroup = "${PipelineGroupShellSpec}"
-    if (yamlConf != null) {
-        pipelineGroup = dataGet(yamlConf, "pipeline")
-    }
-    echo "Using build: ${pipelineGroup}"
-    def pipeline = null
-    if (factory.containsKey("${pipelineGroup}")) {
-        pipeline = factory.get("${pipelineGroup}")
-    } else {
-        pipeline = new unknowPipeline()
-    }
-
-    stage('Project Build') {
-        pipeline.build(yamlConf)
-    }
-
-    stage('Unit Testing') {
-        pipeline.unitTesting(yamlConf)
-    }
-
-    stage('Build And Push Image') {
-        pipeline.docker(yamlConf)
-    }
-
-    stage('Deploy To Kubernetes') {
-        pipeline.deploy(yamlConf)
-    }
-
-    stage('Testing') {
-        pipeline.testing(yamlConf)
     }
 }
 

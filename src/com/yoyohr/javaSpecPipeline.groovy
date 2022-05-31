@@ -9,22 +9,14 @@ import com.yoyohr.environment.PipelineEnv
  */
 
 def build(yamlConf) {
-    def hook_before = dataGet(yamlConf, "pipeline_hook.build_before")
-    def hook_after = dataGet(yamlConf, "pipeline_hook.build_after")
-
-    if (hook_before != null) {
-        sh """
-bash -ex;
-${hook_before}
-"""
-    }
-
+    def buildImage = dataGet(yamlConf, "buildImage")
+    def buildCommand = dataGet(yamlConf, "buildCommand")
     sh """
 bash -ex;
 
 sed -i 's/<packaging>war/<packaging>jar/g' pom.xml
 
-docker run --rm -w /work -v /root/.m2:/root/.m2 -v \${MY_PWD}:/work maven:3.6-openjdk-11 mvn clean package -Dfile.encoding=UTF-8 -DskipTests=true
+docker run --rm -w /workspace -v /root/.m2:/root/.m2 -v \${MY_PWD}:/workspace ${buildImage} ${buildCommand}
 
 ls -l target
 
@@ -34,17 +26,9 @@ mv target/\${jarName} target/app.jar
 
 ls -l target
 """
-
-    if (hook_after != null) {
-        sh """
-bash -ex;
-${hook_after}
-"""
-    }
 }
 
 def unitTesting(yamlConf) {
-    noticeWarning("Warning！构建流程不支持。")
 }
 
 def docker(yamlConf) {
@@ -52,32 +36,14 @@ def docker(yamlConf) {
 }
 
 def deploy(yamlConf) {
-    def hook_before = dataGet(yamlConf, "pipeline_hook.deploy_before")
-    def hook_after = dataGet(yamlConf, "pipeline_hook.deploy_after")
-
-    if (hook_before != null) {
-        sh """
-bash -ex;
-${hook_before}
-"""
-    }
-
-    if ("${IS_TEST}" == "true") {
+    if ("${MY_BUILD_ENV}" == PipelineEnv.BuildTest) {
         deployTestToKubernetes()
     }
 
-    if ("${IS_RELEASE}" == "true") {
-        notice('生产环境部署', '生产环境忽略部署')
-    }
-
-    if (hook_after != null) {
-        sh """
-bash -ex;
-${hook_after}
-"""
+    if ("${MY_BUILD_ENV}" == PipelineEnv.BuildRelease) {
+        notice("${MY_BUILD_ENV}", '>>>>>>>>>>>>>>>>> 忽略部署 <<<<<<<<<<<<<<<<<')
     }
 }
 
 def testing(yamlConf) {
-    noticeWarning("Warning！构建流程不支持。")
 }
