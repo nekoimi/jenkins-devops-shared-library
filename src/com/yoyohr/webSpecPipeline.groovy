@@ -24,7 +24,7 @@ def build(yamlConf) {
         return
     }
     // commandExec
-    def commandExec = "docker run --rm -w /workspace -v /root/.npm:/root/.npm -v ${MY_PWD}:/workspace"
+    def commandExec = "docker run --rm -w /workspace -v /root/.npm:/root/.npm -v ${MY_PWD}:/workspace ${buildImage}"
 
     runHook(yamlConf, "buildBefore", commandExec)
 
