@@ -2,12 +2,14 @@ import com.yoyohr.goSpecPipeline
 import com.yoyohr.javaSpecPipeline
 import com.yoyohr.phpSpecPipeline
 import com.yoyohr.shellSpecPipeline
+import com.yoyohr.webSpecPipeline
 import com.yoyohr.unknowPipeline
 
-import static com.yoyohr.environment.PipelineEnv.PipelineGroupGoSpec
-import static com.yoyohr.environment.PipelineEnv.PipelineGroupJavaSpec
-import static com.yoyohr.environment.PipelineEnv.PipelineGroupPhpSpec
-import static com.yoyohr.environment.PipelineEnv.PipelineGroupShellSpec
+import static com.yoyohr.environment.PipelineEnv.GoSpec
+import static com.yoyohr.environment.PipelineEnv.JavaSpec
+import static com.yoyohr.environment.PipelineEnv.PhpSpec
+import static com.yoyohr.environment.PipelineEnv.ShellSpec
+import static com.yoyohr.environment.PipelineEnv.WebSpec
 
 /**
  * <p>pipelineRunner</p>
@@ -16,24 +18,33 @@ import static com.yoyohr.environment.PipelineEnv.PipelineGroupShellSpec
  */
 
 def call(yamlConf) {
-    factory = [
-            "${PipelineGroupShellSpec}": new shellSpecPipeline(),
-            "${PipelineGroupPhpSpec}"  : new phpSpecPipeline(),
-            "${PipelineGroupJavaSpec}" : new javaSpecPipeline(),
-            "${PipelineGroupGoSpec}"   : new goSpecPipeline()
-    ]
-    def pipelineGroup = PipelineGroupShellSpec
-    if (yamlConf != null) {
-        pipelineGroup = dataGet(yamlConf, "pipeline")
-    }
+    def pgroup = dataGet(yamlConf, "pipeline")
+
+    echo "Using build: ${pgroup}"
 
     def pipeline = null
-    if (!factory.containsKey(pipelineGroup)) {
-        pipeline = new unknowPipeline()
-    } else {
-        echo "Using build: ${pipelineGroup}"
+    if (pgroup == null) {
+        pipeline = new shellSpecPipeline()
+    }
 
-        pipeline = factory.get(pipelineGroup)
+    if (pgroup == ShellSpec) {
+        pipeline = new shellSpecPipeline()
+    }
+
+    if (pgroup == WebSpec) {
+        pipeline = new webSpecPipeline()
+    }
+
+    if (pgroup == PhpSpec) {
+        pipeline = new phpSpecPipeline()
+    }
+
+    if (pgroup == JavaSpec) {
+        pipeline = new javaSpecPipeline()
+    }
+
+    if (pgroup == GoSpec) {
+        pipeline = new goSpecPipeline()
     }
 
     ///////////////////////////////////////////////////////////////////////////////////
