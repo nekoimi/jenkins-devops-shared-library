@@ -19,7 +19,7 @@ def build(yamlConf) {
 
 
     withEnv([
-            "COMMAND_EXEC=${commandExec}"
+            "MY_COMMAND_EXEC=${commandExec}"
     ]) {
         if (hookBefore != null) {
             sh """
@@ -48,7 +48,7 @@ ls -l target
     }
 
     withEnv([
-            "COMMAND_EXEC=${commandExec}"
+            "MY_COMMAND_EXEC=${commandExec}"
     ]) {
         if (hookAfter != null) {
             sh """

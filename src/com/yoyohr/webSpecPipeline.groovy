@@ -19,7 +19,7 @@ def build(yamlConf) {
     def buildCommand = dataGet(yamlConf, "buildCommand")
 
     withEnv([
-            "COMMAND_EXEC=${commandExec}"
+            "MY_COMMAND_EXEC=${commandExec}"
     ]) {
         if (hookBefore != null) {
             sh """
@@ -50,7 +50,7 @@ ls -l
     }
 
     withEnv([
-            "COMMAND_EXEC=${commandExec}"
+            "MY_COMMAND_EXEC=${commandExec}"
     ]) {
         if (hookAfter != null) {
             sh """
