@@ -5,60 +5,46 @@ package com.yoyohr
  * @author nekoimi 2022/05/29
  */
 
+def doBuild(command) {
+    sh """
+bash -ex;
+
+\${MY_COMMAND_EXEC} ${command}
+
+ls -l
+"""
+}
+
 def build(yamlConf) {
-    def hookBefore = dataGet(yamlConf, "pipelineHook.buildBefore")
-    def hookAfter = dataGet(yamlConf, "pipelineHook.buildAfter")
     def buildImage = dataGet(yamlConf, "buildImage")
+    def installCommand = dataGet(yamlConf, "installCommand")
+    def buildCommand = dataGet(yamlConf, "buildCommand")
     if (buildImage == null || buildImage.toString().length() <= 0) {
         noticeWarning('buildImage未配置!')
         return
     }
     // commandExec
     def commandExec = "docker run --rm -w /workspace -v /root/.npm:/root/.npm -v \${MY_PWD}:/workspace"
-    def installCommand = dataGet(yamlConf, "installCommand")
-    def buildCommand = dataGet(yamlConf, "buildCommand")
 
-    withEnv([
-            "MY_COMMAND_EXEC=${commandExec}"
-    ]) {
-        if (hookBefore != null) {
-            sh """
-bash -ex;
-${hookBefore}
-"""
+    runHook(yamlConf, "buildBefore", commandExec)
+
+    if (stringIsNotEmpty(installCommand)) {
+        withEnv([
+                "MY_COMMAND_EXEC=${commandExec}"
+        ]) {
+            doBuild(installCommand)
         }
     }
 
-    if (installCommand != null && installCommand.toString().length() > 0) {
-        sh """
-bash -ex;
-
-${commandExec} ${buildImage} ${installCommand}
-
-ls -l
-"""
-    }
-
-    if (buildCommand != null && buildCommand.toString().length() > 0) {
-        sh """
-bash -ex;
-
-${commandExec} ${buildImage} ${buildCommand}
-
-ls -l
-"""
-    }
-
-    withEnv([
-            "MY_COMMAND_EXEC=${commandExec}"
-    ]) {
-        if (hookAfter != null) {
-            sh """
-bash -ex;
-${hookAfter}
-"""
+    if (stringIsNotEmpty(buildCommand)) {
+        withEnv([
+                "MY_COMMAND_EXEC=${commandExec}"
+        ]) {
+            doBuild(buildCommand)
         }
     }
+
+    runHook(yamlConf, "buildAfter", commandExec)
 }
 
 def unitTesting(yamlConf) {

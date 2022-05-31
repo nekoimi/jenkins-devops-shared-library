@@ -6,21 +6,9 @@ package com.yoyohr
  */
 
 def build(yamlConf) {
-    def hookBefore = dataGet(yamlConf, "pipelineHook.buildBefore")
-    def hookAfter = dataGet(yamlConf, "pipelineHook.buildAfter")
-    if (hookBefore != null) {
-        sh """
-bash -ex;
-${hookBefore}
-"""
-    }
+    runHook(yamlConf, "buildBefore", "")
 
-    if (hookAfter != null) {
-        sh """
-bash -ex;
-${hookAfter}
-"""
-    }
+    runHook(yamlConf, "buildAfter", "")
 }
 
 def unitTesting(yamlConf) {
