@@ -66,12 +66,15 @@ createProjectChart() {
 
 updateChartValues() {
     mv ${k8sValueYaml} ${MY_WORKSPACE}/helm-charts/${projectName}/values.yaml
-
-    cat >> ${MY_WORKSPACE}/helm-charts/${projectName}/values.yaml <<EOF
+    
+    image=\$(cat ${k8sValueYaml} | grep image | sed s/[[:space:]]//g)
+    if [ -z "\$image" ]; then
+        cat >> ${MY_WORKSPACE}/helm-charts/${projectName}/values.yaml <<EOF
 image:
     repository: ${dockerRepository}
     tag: "${dockerTag}"
 EOF
+    fi
 
     cd ${MY_WORKSPACE}/helm-charts && git add . && git commit -m "Update by ${MY_JOB_NAME}-${MY_BUILD_ENV}-${MY_BUILD_ID}" && git push origin master
 }
