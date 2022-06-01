@@ -57,7 +57,10 @@ createProjectChart() {
 
             writeChartToYaml ${MY_WORKSPACE}/helm-charts/${projectName}
 
-            cd ${MY_WORKSPACE}/helm-charts && git add . && git commit -m "Create ${projectName} by ${MY_JOB_NAME}-${MY_BUILD_ENV}-${MY_BUILD_ID}" && git push origin master
+            cd ${MY_WORKSPACE}/helm-charts
+            git add . 
+            git commit -m "Create ${projectName} by ${MY_JOB_NAME}-${MY_BUILD_ENV}-${MY_BUILD_ID}" 
+            git push origin master
 
             echo 'Helm chart 创建完成!'
         fi
@@ -79,7 +82,11 @@ image:
 EOF
     fi
 
-    cd ${MY_WORKSPACE}/helm-charts && git add . && git commit -m "Update by ${MY_JOB_NAME}-${MY_BUILD_ENV}-${MY_BUILD_ID}" && git push origin master
+    cd ${MY_WORKSPACE}/helm-charts 
+    git add . 
+    git commit -m "Update by ${MY_JOB_NAME}-${MY_BUILD_ENV}-${MY_BUILD_ID}" 
+    git push origin master
+    
 }
 
 if [ -f "${k8sValueYaml}" ]; then
