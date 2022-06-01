@@ -31,6 +31,7 @@ loopReplaceChart() {
 writeChartToYaml() {
         cat > \$1/Chart.yaml <<EOF
 # docs https://helm.sh/zh/docs/topics/charts/
+# updated at ${MY_JOB_NAME}-${MY_BUILD_ENV}-${MY_BUILD_ID}
 apiVersion: v2
 name: ${projectName}
 version: 0.1.0
@@ -57,13 +58,10 @@ createProjectChart() {
 
             writeChartToYaml ${MY_WORKSPACE}/helm-charts/${projectName}
 
-            gitDiff=\$(git diff)
-            if [ ! -z "\$gitDiff" ]; then
-                cd ${MY_WORKSPACE}/helm-charts
-                git add . 
-                git commit -m "Create ${projectName} by ${MY_JOB_NAME}-${MY_BUILD_ENV}-${MY_BUILD_ID}" 
-                git push origin master
-            fi
+            cd ${MY_WORKSPACE}/helm-charts
+            git add . 
+            git commit -m "Create ${projectName} by ${MY_JOB_NAME}-${MY_BUILD_ENV}-${MY_BUILD_ID}" 
+            git push origin master
 
             echo 'Helm chart created!'
         fi
@@ -79,18 +77,15 @@ updateChartValues() {
 image:
     repository: ${dockerRepository}
     tag: "${dockerTag}"
+
+# updated at ${MY_JOB_NAME}-${MY_BUILD_ENV}-${MY_BUILD_ID}
 EOF
     fi
 
-    gitDiff=\$(git diff | sed s/[[:space:]]//g)
-    echo 'fsdfsdf'
-    echo \$gitDiff
-    if [ ! -z "\$gitDiff" ]; then
-        cd ${MY_WORKSPACE}/helm-charts 
-        git add . 
-        git commit -m "Update by ${MY_JOB_NAME}-${MY_BUILD_ENV}-${MY_BUILD_ID}" 
-        git push origin master
-    fi
+    cd ${MY_WORKSPACE}/helm-charts 
+    git add . 
+    git commit -m "Update by ${MY_JOB_NAME}-${MY_BUILD_ENV}-${MY_BUILD_ID}" 
+    git push origin master
     
     echo 'Helm chart updated!'
 }
