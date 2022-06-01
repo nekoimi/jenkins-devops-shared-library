@@ -67,7 +67,7 @@ createProjectChart() {
 updateChartValues() {
     mv ${k8sValueYaml} ${MY_WORKSPACE}/helm-charts/${projectName}/values.yaml
     
-    image=\$(cat ${k8sValueYaml} | grep image | sed s/[[:space:]]//g)
+    image=\$(cat ${MY_WORKSPACE}/helm-charts/${projectName}/values.yaml | grep image | sed s/[[:space:]]//g)
     echo '----------------------'
     echo \$image
     echo '----------------------'
