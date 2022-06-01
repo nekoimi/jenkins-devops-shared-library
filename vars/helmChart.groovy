@@ -57,12 +57,15 @@ createProjectChart() {
 
             writeChartToYaml ${MY_WORKSPACE}/helm-charts/${projectName}
 
-            cd ${MY_WORKSPACE}/helm-charts
-            git add . 
-            git commit -m "Create ${projectName} by ${MY_JOB_NAME}-${MY_BUILD_ENV}-${MY_BUILD_ID}" 
-            git push origin master
+            gitDiff=\$(git diff)
+            if [ ! -z "\$gitDiff" ]; then
+                cd ${MY_WORKSPACE}/helm-charts
+                git add . 
+                git commit -m "Create ${projectName} by ${MY_JOB_NAME}-${MY_BUILD_ENV}-${MY_BUILD_ID}" 
+                git push origin master
+            fi
 
-            echo 'Helm chart 创建完成!'
+            echo 'Helm chart created!'
         fi
     fi
 }
@@ -71,9 +74,6 @@ updateChartValues() {
     mv ${k8sValueYaml} ${MY_WORKSPACE}/helm-charts/${projectName}/values.yaml
     
     image=\$(cat ${MY_WORKSPACE}/helm-charts/${projectName}/values.yaml | grep image | sed s/[[:space:]]//g)
-    echo '----------------------'
-    echo \$image
-    echo '----------------------'
     if [ -z "\$image" ]; then
         cat >> ${MY_WORKSPACE}/helm-charts/${projectName}/values.yaml <<EOF
 image:
@@ -82,11 +82,15 @@ image:
 EOF
     fi
 
-    cd ${MY_WORKSPACE}/helm-charts 
-    git add . 
-    git commit -m "Update by ${MY_JOB_NAME}-${MY_BUILD_ENV}-${MY_BUILD_ID}" 
-    git push origin master
+    gitDiff=\$(git diff)
+    if [ ! -z "\$gitDiff" ]; then
+        cd ${MY_WORKSPACE}/helm-charts 
+        git add . 
+        git commit -m "Update by ${MY_JOB_NAME}-${MY_BUILD_ENV}-${MY_BUILD_ID}" 
+        git push origin master
+    fi
     
+    echo 'Helm chart updated!'
 }
 
 if [ -f "${k8sValueYaml}" ]; then
