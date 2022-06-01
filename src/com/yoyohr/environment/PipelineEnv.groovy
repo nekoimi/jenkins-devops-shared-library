@@ -20,4 +20,5 @@ final class PipelineEnv {
     public static final def PhpSpec = "php-spec"
     public static final def JavaSpec = "java-spec"
     public static final def GoSpec = "go-spec"
+    public static final def BcsSpec = "bcs-spec"
 }

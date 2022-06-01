@@ -30,6 +30,9 @@ def call(yamlConf) {
         case GoSpec:
             pipeline = new goSpecPipeline()
             break
+        case BcsSpec:
+            pipeline = new bscSpecPipeline()
+            break
         default:
             pipeline = new shellSpecPipeline()
             break
@@ -64,6 +67,9 @@ def call(yamlConf) {
                 case JavaSpec:
                 case GoSpec:
                     helmChart(yamlConf, "template-svc-spec")
+                    break
+                case BcsSpec:
+                    helmChart(yamlConf, "template-bcs-spec")
                     break
                 default:
                     helmChart(yamlConf, "")

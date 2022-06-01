@@ -17,34 +17,32 @@ ls -l
 
 def build(yamlConf) {
     def buildImage = dataGet(yamlConf, "buildImage")
-    def installCommand = dataGet(yamlConf, "installCommand")
-    def buildCommand = dataGet(yamlConf, "buildCommand")
-    if (buildImage == null || buildImage.toString().length() <= 0) {
-        noticeWarning('buildImage未配置!')
-        return
-    }
-    // commandExec
-    def commandExec = "docker run --rm -w /workspace -v /root/.npm:/root/.npm -v ${MY_PWD}:/workspace ${buildImage}"
+    if (stringIsNotEmpty(buildImage)) {
+        def installCommand = dataGet(yamlConf, "installCommand")
+        def buildCommand = dataGet(yamlConf, "buildCommand")
+        // commandExec
+        def commandExec = "docker run --rm -w /workspace -v /root/.npm:/root/.npm -v ${MY_PWD}:/workspace ${buildImage}"
 
-    runHook(yamlConf, "buildBefore", commandExec)
+        runHook(yamlConf, "buildBefore", commandExec)
 
-    if (stringIsNotEmpty(installCommand)) {
-        withEnv([
-                "MY_COMMAND_EXEC=${commandExec}"
-        ]) {
-            doBuild(installCommand)
+        if (stringIsNotEmpty(installCommand)) {
+            withEnv([
+                    "MY_COMMAND_EXEC=${commandExec}"
+            ]) {
+                doBuild(installCommand)
+            }
         }
-    }
 
-    if (stringIsNotEmpty(buildCommand)) {
-        withEnv([
-                "MY_COMMAND_EXEC=${commandExec}"
-        ]) {
-            doBuild(buildCommand)
+        if (stringIsNotEmpty(buildCommand)) {
+            withEnv([
+                    "MY_COMMAND_EXEC=${commandExec}"
+            ]) {
+                doBuild(buildCommand)
+            }
         }
-    }
 
-    runHook(yamlConf, "buildAfter", commandExec)
+        runHook(yamlConf, "buildAfter", commandExec)
+    }
 }
 
 def unitTesting(yamlConf) {
