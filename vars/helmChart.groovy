@@ -69,14 +69,8 @@ updateChartValues() {
 
     cat >> ${MY_WORKSPACE}/helm-charts/${projectName}/values.yaml <<EOF
 image:
-repository: ${dockerRepository}
-tag: "${dockerTag}"
-EOF
-
-    cat > ${MY_WORKSPACE}/helm-charts/${projectName}/upgrade.yaml <<EOF
-image:
-repository: ${dockerRepository}
-tag: "${dockerTag}"
+    repository: ${dockerRepository}
+    tag: "${dockerTag}"
 EOF
 
     cd ${MY_WORKSPACE}/helm-charts && git add . && git commit -m "Update by ${MY_JOB_NAME}-${MY_BUILD_ENV}-${MY_BUILD_ID}" && git push origin master
