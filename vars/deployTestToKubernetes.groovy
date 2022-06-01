@@ -5,44 +5,6 @@
  */
 
 def call() {
-    def projectName = "${MY_PROJECT_NAME}"
-    def k8sValueYaml = "${MY_WORKSPACE}/k8s/${MY_BUILD_ENV}-values.yaml"
-    def dockerImage = "${MY_DOCKER_REGISTRY_IMAGE}"
-    def dockerRepository = dockerImage.split("[:]").first()
-    def dockerTag = dockerImage.split("[:]").last()
-    // 更新 Helm values.yaml 文件
-    withCredentials([gitUsernamePassword(credentialsId: "${MY_GIT_ID}")]) {
-        sh """
-bash -ex;
-
-if [ -f "${k8sValueYaml}" ]; then
-    git clone \${MY_GIT_HELM_CHARTS_URL} helm-charts && ls -l helm-charts
-    
-    if [ -e "${MY_WORKSPACE}/helm-charts/${projectName}" ]; then
-        mv ${k8sValueYaml} ${MY_WORKSPACE}/helm-charts/${projectName}/values.yaml
-
-        cat >> ${MY_WORKSPACE}/helm-charts/${projectName}/values.yaml <<EOF
-image:
-    repository: ${dockerRepository}
-    tag: "${dockerTag}"
-EOF
-
-        cat > ${MY_WORKSPACE}/helm-charts/${projectName}/upgrade.yaml <<EOF
-image:
-    repository: ${dockerRepository}
-    tag: "${dockerTag}"
-EOF
-
-        cd helm-charts && git add . && git commit -m "${MY_JOB_NAME}-${MY_BUILD_ENV}-${MY_BUILD_ID}" && git push origin master
-    else
-        echo 'Warning! 项目缺少helm部署chart！'
-    fi
-else
-    echo 'Warning! 项目缺少k8s部署配置文件！'
-fi
-"""
-    }
-
     def apiServerMntPath = "/mnt"
     def server = [:]
     server.name = "api-server"

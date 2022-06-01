@@ -4,7 +4,7 @@
  * @author nekoimi 2022/05/31
  */
 
-def call() {
+def call(yamlConf) {
     def apiServerMntPath = "/mnt"
     def server = [:]
     server.name = "api-server"

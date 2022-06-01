@@ -47,6 +47,7 @@ def call() {
         def projectGroup = "library"
         def projectName = jobName
         def projectVersion = buildId
+        def projectDescription = jobName
 
         def exists = fileExists projectYaml
         if (exists) {
@@ -54,6 +55,7 @@ def call() {
             projectGroup = dataGet(yamlConf, "group")
             projectName = dataGet(yamlConf, "name")
             projectVersion = dataGet(yamlConf, "version")
+            projectDescription = dataGet(yamlConf, "description")
             def log = ""
             yamlConf.each { k, v ->
                 log = log.concat("${k} -> ${v}\n")
@@ -86,7 +88,8 @@ def call() {
                 "MY_DOCKER_REGISTRY_IMAGE=${dockerRegistryImage}",
                 "MY_PROJECT_GROUP=${projectGroup}",
                 "MY_PROJECT_NAME=${projectName}",
-                "MY_PROJECT_VERSION=${projectVersion}"
+                "MY_PROJECT_VERSION=${projectVersion}",
+                "MY_PROJECT_DESCRIPTION=${projectDescription}"
         ]) {
             // ls
             sh "ls -l"
@@ -95,8 +98,8 @@ def call() {
             sh "printenv"
 
             try {
-                // Run
-                pipelineRunner(yamlConf)
+                // Run stages
+                runPipelineStages(yamlConf)
             }
 
 //            catch (Exception e) {
