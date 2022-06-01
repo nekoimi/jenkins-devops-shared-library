@@ -29,13 +29,13 @@ cd ${apiServerMntPath}/helm-charts && git pull origin master
 if [ -e "${apiServerMntPath}/helm-charts/${MY_PROJECT_NAME}" ]; then
     status=\$(helm list --all --time-format "2006-01-02" --filter "${MY_PROJECT_NAME}" | sed -n '2p' | awk '{print \$5}' | sed s/[[:space:]]//g)
     
-    if [ \${status} == 'failed' ]; then
+    if [[ \${status} == 'failed' ]]; then
         echo 'Uninstall Chart ......'
         
         helm uninstall ${MY_PROJECT_NAME}
     fi
     
-    if [ \${status} == 'deployed' ]; then
+    if [[ \${status} == 'deployed' ]]; then
         echo 'Upgrade Chart ......'
         
         cd "${apiServerMntPath}/helm-charts/${MY_PROJECT_NAME}"
