@@ -82,7 +82,9 @@ image:
 EOF
     fi
 
-    gitDiff=\$(git diff)
+    gitDiff=\$(git diff | sed s/[[:space:]]//g)
+    echo 'fsdfsdf'
+    echo \$gitDiff
     if [ ! -z "\$gitDiff" ]; then
         cd ${MY_WORKSPACE}/helm-charts 
         git add . 
