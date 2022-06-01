@@ -33,7 +33,7 @@ writeChartToYaml() {
 # docs https://helm.sh/zh/docs/topics/charts/
 apiVersion: v2
 name: ${projectName}
-version: 0.0.1
+version: 0.1.0
 appVersion: "${projectVersion}"
 description: ${projectDescription}
 type: application
