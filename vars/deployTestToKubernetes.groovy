@@ -44,6 +44,14 @@ if [ -e "${apiServerMntPath}/helm-charts/${MY_PROJECT_NAME}" ]; then
     else
         echo 'Install Chart ......'
         
+        if [ -f "${apiServerMntPath}/helm-charts/${MY_PROJECT_NAME}/templates/persistentvolume.yaml" ]; then
+            if [ ! -e "/mnt/storage/tempfile/${MY_PROJECT_NAME}" ]; then
+                mkdir -p /mnt/storage/tempfile/${MY_PROJECT_NAME}
+                
+                echo '创建PersistentVolume挂载文件夹完成!'
+            fi
+        fi
+        
         helm install ${MY_PROJECT_NAME} "${MY_PROJECT_NAME}/"
     fi
     
