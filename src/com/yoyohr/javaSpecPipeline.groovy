@@ -9,8 +9,6 @@ def doBuild(command) {
     sh """
 bash -ex;
 
-sed -i 's/<packaging>war/<packaging>jar/g' pom.xml
-
 \${MY_COMMAND_EXEC} ${command}
 
 ls -l target
