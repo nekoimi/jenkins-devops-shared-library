@@ -34,6 +34,14 @@ if [ -e "${apiServerMntPath}/helm-charts/${MY_PROJECT_NAME}" ]; then
         
         helm uninstall ${MY_PROJECT_NAME}
     fi
+
+    if [ -f "${apiServerMntPath}/helm-charts/${MY_PROJECT_NAME}/templates/persistentvolume.yaml" ]; then
+        if [ ! -e "/mnt/storage/volumes/${MY_PROJECT_NAME}" ]; then
+            mkdir -p /mnt/storage/volumes/${MY_PROJECT_NAME}
+            
+            echo '创建PersistentVolume挂载文件夹完成!'
+        fi
+    fi
     
     if [[ \${status} == 'deployed' ]]; then
         echo 'Upgrade Chart ......'
@@ -43,14 +51,6 @@ if [ -e "${apiServerMntPath}/helm-charts/${MY_PROJECT_NAME}" ]; then
         helm upgrade -f values.yaml ${MY_PROJECT_NAME} .
     else
         echo 'Install Chart ......'
-        
-        if [ -f "${apiServerMntPath}/helm-charts/${MY_PROJECT_NAME}/templates/persistentvolume.yaml" ]; then
-            if [ ! -e "/mnt/storage/volumes/${MY_PROJECT_NAME}" ]; then
-                mkdir -p /mnt/storage/volumes/${MY_PROJECT_NAME}
-                
-                echo '创建PersistentVolume挂载文件夹完成!'
-            fi
-        fi
         
         helm install ${MY_PROJECT_NAME} "${MY_PROJECT_NAME}/"
     fi
