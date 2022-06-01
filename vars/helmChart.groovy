@@ -46,43 +46,51 @@ annotations:
 EOF
 }
 
+createProjectChart() {
+    if [ ! -z "${template}" ]; then
+        if [ ! -e "${MY_WORKSPACE}/helm-charts/${template}" ]; then
+            echo 'Helm chart 模板 ${template} 未找到！'
+        else
+            cp -rf ${MY_WORKSPACE}/helm-charts/${template} ${MY_WORKSPACE}/helm-charts/${projectName}
+
+            loopReplaceChart ${MY_WORKSPACE}/helm-charts/${projectName}
+
+            writeChartToYaml ${MY_WORKSPACE}/helm-charts/${projectName}
+
+            cd ${MY_WORKSPACE}/helm-charts && git add . && git commit -m "Create ${projectName} by ${MY_JOB_NAME}-${MY_BUILD_ENV}-${MY_BUILD_ID}" && git push origin master
+
+            echo 'Helm chart 创建完成!'
+        fi
+    fi
+}
+
+updateChartValues() {
+    mv ${k8sValueYaml} ${MY_WORKSPACE}/helm-charts/${projectName}/values.yaml
+
+    cat >> ${MY_WORKSPACE}/helm-charts/${projectName}/values.yaml <<EOF
+image:
+repository: ${dockerRepository}
+tag: "${dockerTag}"
+EOF
+
+    cat > ${MY_WORKSPACE}/helm-charts/${projectName}/upgrade.yaml <<EOF
+image:
+repository: ${dockerRepository}
+tag: "${dockerTag}"
+EOF
+
+    cd ${MY_WORKSPACE}/helm-charts && git add . && git commit -m "Update by ${MY_JOB_NAME}-${MY_BUILD_ENV}-${MY_BUILD_ID}" && git push origin master
+}
+
 if [ -f "${k8sValueYaml}" ]; then
     git clone ${MY_GIT_HELM_CHARTS_URL} helm-charts && ls -l helm-charts
     
     if [ ! -e "${MY_WORKSPACE}/helm-charts/${projectName}" ]; then
-        if [ ! -z "${template}" ]; then
-            if [ ! -e "${MY_WORKSPACE}/helm-charts/${template}" ]; then
-                echo 'Helm chart 模板 ${template} 未找到！'
-            else
-                cp -rf ${MY_WORKSPACE}/helm-charts/${template} ${MY_WORKSPACE}/helm-charts/${projectName}
-
-                loopReplaceChart ${MY_WORKSPACE}/helm-charts/${projectName}
-
-                writeChartToYaml ${MY_WORKSPACE}/helm-charts/${projectName}
-
-                cd helm-charts && git add . && git commit -m "Create ${projectName} by ${MY_JOB_NAME}-${MY_BUILD_ENV}-${MY_BUILD_ID}" && git push origin master
-
-                echo 'Helm chart 创建完成!'
-            fi
-        fi
+        createProjectChart
     fi
     
     if [ -e "${MY_WORKSPACE}/helm-charts/${projectName}" ]; then
-        mv ${k8sValueYaml} ${MY_WORKSPACE}/helm-charts/${projectName}/values.yaml
-
-        cat >> ${MY_WORKSPACE}/helm-charts/${projectName}/values.yaml <<EOF
-image:
-    repository: ${dockerRepository}
-    tag: "${dockerTag}"
-EOF
-
-        cat > ${MY_WORKSPACE}/helm-charts/${projectName}/upgrade.yaml <<EOF
-image:
-    repository: ${dockerRepository}
-    tag: "${dockerTag}"
-EOF
-
-        cd helm-charts && git add . && git commit -m "Update by ${MY_JOB_NAME}-${MY_BUILD_ENV}-${MY_BUILD_ID}" && git push origin master
+        updateChartValues
     else
         echo 'Warning! 项目缺少helm部署chart！'
     fi
