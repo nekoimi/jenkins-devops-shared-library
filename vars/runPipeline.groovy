@@ -41,6 +41,12 @@ def call() {
             checkout scm
         }
 
+        // ls
+        sh "ls -l"
+
+        // pwd
+        sh "pwd"
+
         def yamlConf = null
 
         // Project information
