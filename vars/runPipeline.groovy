@@ -55,9 +55,15 @@ def call() {
         def projectVersion = buildId
         def projectDescription = jobName
 
-        def exists = fileExists projectYaml
+        def exists = fileExists "project.yaml"
+        if (!exists) {
+            exists = fileExists "project.yml"
+            if (exists) {
+                projectYaml = "project.yml"
+            }
+        }
         if (exists) {
-            yamlConf = readYaml file: "project.yaml"
+            yamlConf = readYaml file: "${projectYaml}"
             projectGroup = dataGet(yamlConf, "group")
             projectName = dataGet(yamlConf, "name")
             projectVersion = dataGet(yamlConf, "version")
