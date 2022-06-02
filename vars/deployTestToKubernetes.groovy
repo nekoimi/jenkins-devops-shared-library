@@ -38,6 +38,7 @@ if [ -e "${apiServerMntPath}/helm-charts/${MY_PROJECT_NAME}" ]; then
     if [ -f "${apiServerMntPath}/helm-charts/${MY_PROJECT_NAME}/templates/persistentvolume.yaml" ]; then
         if [ ! -e "/mnt/storage/volumes/${MY_PROJECT_NAME}" ]; then
             mkdir -p /mnt/storage/volumes/${MY_PROJECT_NAME}
+            chmod -R 777 /mnt/storage/volumes/${MY_PROJECT_NAME}
             
             echo '创建PersistentVolume挂载文件夹完成!'
         fi
