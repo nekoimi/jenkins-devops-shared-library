@@ -61,6 +61,8 @@ def call() {
                 log = log.concat("${k} -> ${v}\n")
             }
             notice('YamlConf', log)
+        } else {
+            noticeWarning('project.yaml does not exists!')
         }
 
         // Docker image
