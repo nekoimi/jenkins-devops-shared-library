@@ -25,6 +25,7 @@ if [ -e "${apiServerMntPath}/helm-charts/${MY_PROJECT_NAME}" ]; then
     echo '>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> Helm Test <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'
     if [[ \${status} == 'failed' ]]; then
         echo 'Deploy To Kubernetes failed!'
+        exit 1
     fi
     
     if [[ \${status} == 'deployed' ]]; then

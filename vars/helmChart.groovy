@@ -108,9 +108,11 @@ if [ -f "${k8sValueYaml}" ]; then
         updateChartValues
     else
         echo 'Warning! 项目缺少helm部署chart！'
+        exit 1
     fi
 else
     echo 'Warning! 项目缺少k8s部署配置文件！'
+    exit 1
 fi
 """
     }

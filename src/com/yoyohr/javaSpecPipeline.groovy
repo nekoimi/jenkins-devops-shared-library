@@ -1,4 +1,7 @@
 package com.yoyohr
+
+import com.yoyohr.environment.PipelineEnv
+
 /**
  * <p>java项目标准构建流程</p>
  *
@@ -33,6 +36,66 @@ ls -l target
 """
 }
 
+/**
+ * <p>复制结果到指定目录</p>
+ * @param nameOverride
+ * @param path
+ */
+def doBuildResultCopyToPath(nameOverride, path) {
+    if (!path.toString().endsWith("/")) {
+        path = path.toString().concat("/")
+    }
+
+    def jarExists = fileExists "target/app.jar"
+    if (jarExists) {
+        sh """
+bash -ex;
+
+if [ -d "${path}" ]; then
+    echo 'Copy app.jar To ${path}${nameOverride}.jar......'
+    cp -rf target/app.jar "${path}${nameOverride}.jar"
+else
+    echo 'Warning! Path ${path} does exists!'
+    exit 1
+fi
+
+"""
+    }
+
+    def warExists = fileExists "target/app.war"
+    if (warExists) {
+        sh """
+bash -ex;
+
+if [ -d "${path}" ]; then
+    echo 'Copy app.war To ${path}${nameOverride}.war......'
+    cp -rf target/app.war "${path}${nameOverride}.war"
+else
+    echo 'Warning! Path ${path} does exists!'
+    exit 1
+fi
+
+"""
+    }
+}
+
+/**
+ * <p>复制结果到指定git仓库</p>
+ * @param nameOverride
+ * @param gitUrl
+ */
+def doBuildResultCopyToGit(nameOverride, gitUrl) {
+    withCredentials([gitUsernamePassword(credentialsId: "${MY_GIT_ID}")]) {
+        def warExists = fileExists "target/app.war"
+        if (warExists) {
+            sh """
+bash -ex;
+
+"""
+        }
+    }
+}
+
 def build(yamlConf) {
     def buildImage = dataGet(yamlConf, "buildImage")
     if (stringIsNotEmpty(buildImage)) {
@@ -47,6 +110,36 @@ def build(yamlConf) {
                     "MY_COMMAND_EXEC=${commandExec}"
             ]) {
                 doBuild(buildCommand)
+
+                if ("${MY_BUILD_ENV}" == PipelineEnv.BuildTest) {
+                    def nameOverride = dataGet(yamlConf, "testCopy.git")
+                    if (stringIsEmpty(nameOverride)) {
+                        nameOverride = "${MY_PROJECT_NAME}"
+                    }
+                    def copyGit = dataGet(yamlConf, "testCopy.git")
+                    def copyPath = dataGet(yamlConf, "testCopy.path")
+                    if (stringIsNotEmpty(copyGit)) {
+                        doBuildResultCopyToGit(nameOverride, copyGit)
+                    }
+                    if (stringIsNotEmpty(copyPath)) {
+                        doBuildResultCopyToPath(nameOverride, copyPath)
+                    }
+                }
+
+                if ("${MY_BUILD_ENV}" == PipelineEnv.BuildTest) {
+                    def nameOverride = dataGet(yamlConf, "releaseCopy.git")
+                    if (stringIsEmpty(nameOverride)) {
+                        nameOverride = "${MY_PROJECT_NAME}"
+                    }
+                    def copyGit = dataGet(yamlConf, "releaseCopy.git")
+                    def copyPath = dataGet(yamlConf, "releaseCopy.path")
+                    if (stringIsNotEmpty(copyGit)) {
+                        doBuildResultCopyToGit(nameOverride, copyGit)
+                    }
+                    if (stringIsNotEmpty(copyPath)) {
+                        doBuildResultCopyToPath(nameOverride, copyPath)
+                    }
+                }
             }
         }
 

@@ -36,12 +36,16 @@ pipelineHook:
     echo 'hook:deployAfter'
 # 测试环境构建结果Copy
 testCopy:
+  # 构建结果重命名，默认与name相同
+  nameOverride: ""
   # 复制结果到指定git仓库
   git: ""
   # 复制结果到指定目录
   path: ""
 # 生成环境构建结果Copy
 releaseCopy:
+  # 构建结果重命名，默认与name相同
+  nameOverride: ""
   # 复制结果到指定git仓库
   git: ""
   # 复制结果到指定目录

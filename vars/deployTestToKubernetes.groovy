@@ -61,6 +61,7 @@ if [ -e "${apiServerMntPath}/helm-charts/${MY_PROJECT_NAME}" ]; then
     echo '>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> Helm Status <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'
 else
     echo 'Warning! 项目缺少helm部署chart！'
+    exit 1
 fi
 
 """
