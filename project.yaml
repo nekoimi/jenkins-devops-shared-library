@@ -34,3 +34,15 @@ pipelineHook:
     echo 'hook:deployBefore'
   deployAfter: |
     echo 'hook:deployAfter'
+# 测试环境构建结果Copy
+testCopy:
+  # 复制结果到指定git仓库
+  git: ""
+  # 复制结果到指定目录
+  path: ""
+# 生成环境构建结果Copy
+releaseCopy:
+  # 复制结果到指定git仓库
+  git: ""
+  # 复制结果到指定目录
+  path: ""
