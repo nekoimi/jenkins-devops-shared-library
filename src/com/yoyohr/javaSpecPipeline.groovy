@@ -15,7 +15,19 @@ ls -l target
 
 jarName=\$(ls target | grep .jar\\\$)
 
-mv target/\${jarName} target/app.jar
+if [ ! -z \$jarName ]; then
+    if [ -f \$jarName ]; then
+        mv target/\$jarName target/app.jar
+    fi
+fi
+
+warName=\$(ls target | grep .war\\\$)
+
+if [ ! -z \$warName ]; then
+    if [ -f \$warName ]; then
+        mv target/\$warName target/app.war
+    fi
+fi
 
 ls -l target
 """
