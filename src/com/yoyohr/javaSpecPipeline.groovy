@@ -112,7 +112,7 @@ def build(yamlConf) {
                 doBuild(buildCommand)
 
                 if ("${MY_BUILD_ENV}" == PipelineEnv.BuildTest) {
-                    def nameOverride = dataGet(yamlConf, "testCopy.git")
+                    def nameOverride = dataGet(yamlConf, "testCopy.nameOverride")
                     if (stringIsEmpty(nameOverride)) {
                         nameOverride = "${MY_PROJECT_NAME}"
                     }
@@ -127,7 +127,7 @@ def build(yamlConf) {
                 }
 
                 if ("${MY_BUILD_ENV}" == PipelineEnv.BuildRelease) {
-                    def nameOverride = dataGet(yamlConf, "releaseCopy.git")
+                    def nameOverride = dataGet(yamlConf, "releaseCopy.nameOverride")
                     if (stringIsEmpty(nameOverride)) {
                         nameOverride = "${MY_PROJECT_NAME}"
                     }
