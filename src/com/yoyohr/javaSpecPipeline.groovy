@@ -16,7 +16,7 @@ ls -l target
 jarName=\$(ls target | grep .jar\$ | sed s/[[:space:]]//g)
 
 if [ ! -z \$jarName ]; then
-    if [ -f \$jarName ]; then
+    if [ -f target/\$jarName ]; then
         mv target/\$jarName target/app.jar
     fi
 fi
@@ -24,7 +24,7 @@ fi
 warName=\$(ls target | grep .war\$ | sed s/[[:space:]]//g)
 
 if [ ! -z \$warName ]; then
-    if [ -f \$warName ]; then
+    if [ -f target/\$warName ]; then
         mv target/\$warName target/app.war
     fi
 fi
