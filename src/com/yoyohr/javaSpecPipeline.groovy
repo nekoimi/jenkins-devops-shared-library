@@ -126,7 +126,7 @@ def build(yamlConf) {
                     }
                 }
 
-                if ("${MY_BUILD_ENV}" == PipelineEnv.BuildTest) {
+                if ("${MY_BUILD_ENV}" == PipelineEnv.BuildRelease) {
                     def nameOverride = dataGet(yamlConf, "releaseCopy.git")
                     if (stringIsEmpty(nameOverride)) {
                         nameOverride = "${MY_PROJECT_NAME}"
