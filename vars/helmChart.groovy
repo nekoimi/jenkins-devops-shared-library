@@ -30,6 +30,7 @@ loopReplaceChart() {
 
 writeChartToYaml() {
         cat > \$1/Chart.yaml <<EOF
+
 # docs https://helm.sh/zh/docs/topics/charts/
 apiVersion: v2
 name: ${projectName}
@@ -73,11 +74,13 @@ updateChartValues() {
     image=\$(cat ${MY_WORKSPACE}/helm-charts/${projectName}/values.yaml | grep image | sed s/[[:space:]]//g)
     if [ -z "\$image" ]; then
         cat >> ${MY_WORKSPACE}/helm-charts/${projectName}/values.yaml <<EOF
+
 image:
     repository: ${dockerRepository}
     tag: "${dockerTag}"
 
 # updated at ${MY_BUILD_ENV} ${MY_JOB_NAME}-${MY_BUILD_ID}
+
 EOF
     else
         cat >> ${MY_WORKSPACE}/helm-charts/${projectName}/values.yaml <<EOF
