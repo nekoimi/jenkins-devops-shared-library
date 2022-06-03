@@ -10,8 +10,8 @@ def call() {
     // =========================================================================
     // jenkins凭据ID，git账号
     def gitCredentialId = "gitCredential"
-    // jenkins凭据ID，docker registry账号
-    def dockerRegistryId = "dockerRegistryCredential"
+    // jenkins凭据ID，dockerhub 账号
+    def dockerRegistryId = "dockerhub"
     // docker registry 地址
     def dockerRegistry = "http://registry.youpin-k8s.net"
     // k8s api server 证书ID，证书生成：ssh-keygen -t rsa -b 4096
