@@ -9,7 +9,7 @@ import com.yoyohr.environment.PipelineEnv
 def call() {
     // =========================================================================
     // jenkins凭据ID，git账号
-    def gitCredentialId = "gitCredential"
+    def gitCredentialId = "gitlab"
     // jenkins凭据ID，dockerhub 账号
     def dockerRegistryId = "dockerhub"
     // docker registry 地址
