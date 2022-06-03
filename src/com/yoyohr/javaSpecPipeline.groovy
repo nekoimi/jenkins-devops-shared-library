@@ -13,7 +13,7 @@ bash -ex;
 
 ls -l target
 
-jarName=\$(ls target | grep .jar\$)
+jarName=\$(ls target | grep .jar\$ | sed s/[[:space:]]//g)
 
 if [ ! -z \$jarName ]; then
     if [ -f \$jarName ]; then
@@ -21,7 +21,7 @@ if [ ! -z \$jarName ]; then
     fi
 fi
 
-warName=\$(ls target | grep .war\$)
+warName=\$(ls target | grep .war\$ | sed s/[[:space:]]//g)
 
 if [ ! -z \$warName ]; then
     if [ -f \$warName ]; then
