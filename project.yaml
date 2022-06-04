@@ -40,6 +40,8 @@ testCopy:
   nameOverride: ""
   # 复制结果到指定git仓库
   git: ""
+  # git仓库分支，默认master
+  branch: ""
   # 复制结果到指定目录
   path: ""
 # 生成环境构建结果Copy
@@ -48,5 +50,7 @@ releaseCopy:
   nameOverride: ""
   # 复制结果到指定git仓库
   git: ""
+  # git仓库分支，默认master
+  branch: ""
   # 复制结果到指定目录
   path: ""

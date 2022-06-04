@@ -17,6 +17,8 @@ def call(yamlConf, template) {
         sh """
 bash -ex;
 
+nowTime=\$(date "+%Y-%m-%d %H:%M:%S")
+
 loopReplaceChart() {
     for path in \$(ls \$1); do
         filename="\$1/\$path"
@@ -32,6 +34,7 @@ writeChartToYaml() {
         cat > \$1/Chart.yaml <<EOF
 
 # docs https://helm.sh/zh/docs/topics/charts/
+# created by Jenkins devops at \$nowTime
 apiVersion: v2
 name: ${projectName}
 version: 0.1.0
@@ -60,7 +63,7 @@ createProjectChart() {
 
             cd ${MY_WORKSPACE}/helm-charts
             git add . 
-            git commit -m "Create ${projectName} by ${MY_JOB_NAME}-${MY_BUILD_ENV}-${MY_BUILD_ID}" 
+            git commit -m "Create ${projectName} by Jenkins ${MY_JOB_NAME}-${MY_BUILD_ENV}-${MY_BUILD_ID}" 
             git push origin master
 
             echo 'Helm chart created!'
@@ -79,19 +82,20 @@ image:
     repository: ${dockerRepository}
     tag: "${dockerTag}"
 
-# updated at ${MY_BUILD_ENV} ${MY_JOB_NAME}-${MY_BUILD_ID}
+# updated by Jenkins devops at \$nowTime
 
 EOF
     else
         cat >> ${MY_WORKSPACE}/helm-charts/${projectName}/values.yaml <<EOF
 
-# updated at ${MY_BUILD_ENV} ${MY_JOB_NAME}-${MY_BUILD_ID}
+# updated by Jenkins devops at \$nowTime
+
 EOF
     fi
 
     cd ${MY_WORKSPACE}/helm-charts 
     git add . 
-    git commit -m "Update by ${MY_JOB_NAME}-${MY_BUILD_ENV}-${MY_BUILD_ID}" 
+    git commit -m "Update by Jenkins ${MY_JOB_NAME}-${MY_BUILD_ENV}-${MY_BUILD_ID}" 
     git push origin master
     
     echo 'Helm chart updated!'

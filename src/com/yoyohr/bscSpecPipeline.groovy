@@ -6,6 +6,8 @@ package com.yoyohr
  */
 
 def build(yamlConf) {
+    runHook(yamlConf, "buildBefore", "")
+    runHook(yamlConf, "buildAfter", "")
 }
 
 def unitTesting(yamlConf) {

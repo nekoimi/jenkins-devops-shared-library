@@ -42,6 +42,9 @@ def build(yamlConf) {
         }
 
         runHook(yamlConf, "buildAfter", commandExec)
+    } else {
+        runHook(yamlConf, "buildBefore", "")
+        runHook(yamlConf, "buildAfter", "")
     }
 }
 

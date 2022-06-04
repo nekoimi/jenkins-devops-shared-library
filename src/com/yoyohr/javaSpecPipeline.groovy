@@ -1,7 +1,4 @@
 package com.yoyohr
-
-import com.yoyohr.environment.PipelineEnv
-
 /**
  * <p>java项目标准构建流程</p>
  *
@@ -42,18 +39,14 @@ ls -l target
  * @param path
  */
 def doBuildResultCopyToPath(nameOverride, path) {
-    if (!path.toString().endsWith("/")) {
-        path = path.toString().concat("/")
-    }
-
     def jarExists = fileExists "target/app.jar"
     if (jarExists) {
         sh """
 bash -ex;
 
 if [ -d "${path}" ]; then
-    echo 'Copy app.jar To ${path}${nameOverride}.jar......'
-    cp -rf target/app.jar "${path}${nameOverride}.jar"
+    echo 'Copy app.jar To ${path}/${nameOverride}.jar......'
+    cp -rf target/app.jar "${path}/${nameOverride}.jar"
 else
     echo 'Warning! Path ${path} does exists!'
     exit 1
@@ -68,8 +61,8 @@ fi
 bash -ex;
 
 if [ -d "${path}" ]; then
-    echo 'Copy app.war To ${path}${nameOverride}.war......'
-    cp -rf target/app.war "${path}${nameOverride}.war"
+    echo 'Copy app.war To ${path}/${nameOverride}.war......'
+    cp -rf target/app.war "${path}/${nameOverride}.war"
 else
     echo 'Warning! Path ${path} does exists!'
     exit 1
@@ -83,13 +76,43 @@ fi
  * <p>复制结果到指定git仓库</p>
  * @param nameOverride
  * @param gitUrl
+ * @param branch
  */
-def doBuildResultCopyToGit(nameOverride, gitUrl) {
+def doBuildResultCopyToGit(nameOverride, gitUrl, branch) {
     withCredentials([gitUsernamePassword(credentialsId: "${MY_GIT_ID}")]) {
         def warExists = fileExists "target/app.war"
         if (warExists) {
             sh """
 bash -ex;
+nowTime=\$(date "+%Y-%m-%d %H:%M:%S")
+
+jenkinsWorkspace=\$(dirname \$PWD)
+
+repoMd5=\$(echo "${gitUrl}-${branch}" | md5sum | awk '{print \$1}' | sed s/[[:space:]]//g)
+if [ ! -e "\$jenkinsWorkspace/devopsCopyTo" ]; then
+    mkdir -p \$jenkinsWorkspace/devopsCopyTo
+fi
+
+cd \$jenkinsWorkspace/devopsCopyTo
+
+if [ ! -e "\$jenkinsWorkspace/devopsCopyTo/\$repoMd5" ]; then
+    echo 'Clone远程仓库......'
+    git clone -b ${branch} ${gitUrl} \$repoMd5 && ls -l \$repoMd5
+else
+    echo 'Pull远程仓库......'
+    git pull origin ${branch} && ls -l \$repoMd5
+fi
+
+cp -rf \${MY_WORKSPACE}/target/app.war \$jenkinsWorkspace/devopsCopyTo/\$repoMd5/${nameOverride}.war
+
+cd \$repoMd5
+
+git add .
+
+git diff --quiet && git diff --staged --quiet || git commit -m "Updated Jenkins devops at \$nowTime"
+
+echo 'Push远程仓库......'
+git push origin ${branch}
 
 """
         }
@@ -110,40 +133,34 @@ def build(yamlConf) {
                     "MY_COMMAND_EXEC=${commandExec}"
             ]) {
                 doBuild(buildCommand)
-
-                if ("${MY_BUILD_ENV}" == PipelineEnv.BuildTest) {
-                    def nameOverride = dataGet(yamlConf, "testCopy.nameOverride")
-                    if (stringIsEmpty(nameOverride)) {
-                        nameOverride = "${MY_PROJECT_NAME}"
-                    }
-                    def copyGit = dataGet(yamlConf, "testCopy.git")
-                    def copyPath = dataGet(yamlConf, "testCopy.path")
-                    if (stringIsNotEmpty(copyGit)) {
-                        doBuildResultCopyToGit(nameOverride, copyGit)
-                    }
-                    if (stringIsNotEmpty(copyPath)) {
-                        doBuildResultCopyToPath(nameOverride, copyPath)
-                    }
-                }
-
-                if ("${MY_BUILD_ENV}" == PipelineEnv.BuildRelease) {
-                    def nameOverride = dataGet(yamlConf, "releaseCopy.nameOverride")
-                    if (stringIsEmpty(nameOverride)) {
-                        nameOverride = "${MY_PROJECT_NAME}"
-                    }
-                    def copyGit = dataGet(yamlConf, "releaseCopy.git")
-                    def copyPath = dataGet(yamlConf, "releaseCopy.path")
-                    if (stringIsNotEmpty(copyGit)) {
-                        doBuildResultCopyToGit(nameOverride, copyGit)
-                    }
-                    if (stringIsNotEmpty(copyPath)) {
-                        doBuildResultCopyToPath(nameOverride, copyPath)
-                    }
-                }
             }
         }
 
         runHook(yamlConf, "buildAfter", commandExec)
+    } else {
+        runHook(yamlConf, "buildBefore", "")
+        runHook(yamlConf, "buildAfter", "")
+    }
+
+    def nameOverride = dataGet(yamlConf, "${MY_BUILD_ENV}Copy.nameOverride")
+    if (stringIsEmpty(nameOverride)) {
+        nameOverride = "${MY_PROJECT_NAME}"
+    }
+    def copyPath = dataGet(yamlConf, "${MY_BUILD_ENV}Copy.path")
+    if (stringIsNotEmpty(copyPath)) {
+        if (copyPath.toString().endsWith("/")) {
+            copyPath = copyPath.toString().substring(0, copyPath.toString().length() - 1)
+        }
+        doBuildResultCopyToPath(nameOverride, copyPath)
+    }
+
+    def copyGit = dataGet(yamlConf, "${MY_BUILD_ENV}Copy.git")
+    def copyBranch = dataGet(yamlConf, "${MY_BUILD_ENV}Copy.branch")
+    if (stringIsNotEmpty(copyGit)) {
+        if (stringIsEmpty(copyBranch)) {
+            copyBranch = "master"
+        }
+        doBuildResultCopyToGit(nameOverride, copyGit, copyBranch)
     }
 }
 
