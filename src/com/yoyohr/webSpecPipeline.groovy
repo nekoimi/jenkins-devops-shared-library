@@ -46,6 +46,8 @@ def build(yamlConf) {
         runHook(yamlConf, "buildBefore", "")
         runHook(yamlConf, "buildAfter", "")
     }
+
+    buildResultCopy(yamlConf, "dist", "${MY_PROJECT_NAME}")
 }
 
 def unitTesting(yamlConf) {
