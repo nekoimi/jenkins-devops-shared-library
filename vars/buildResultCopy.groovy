@@ -102,10 +102,6 @@ if [ -e "${buildResult}" ]; then
     
     echo 'Push远程仓库......'
     git push origin ${branch}
-    
-else
-    echo 'Warning! Build result ${buildResult} does exists!'
-    exit 1
 fi
 """
         }
