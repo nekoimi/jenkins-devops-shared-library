@@ -98,7 +98,7 @@ if [ -e "${buildResult}" ]; then
 
     git add .
     
-    git diff --quiet && git diff --staged --quiet || git commit -m "Updated Jenkins devops at \\$nowTime"
+    git diff --quiet && git diff --staged --quiet || git commit -m "Updated Jenkins devops at \$nowTime"
     
     echo 'Push远程仓库......'
     git push origin ${branch}
