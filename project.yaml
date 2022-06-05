@@ -1,25 +1,30 @@
-# 项目名称，唯一，尽量简洁，不要太长，后续 docker image tag、yaml配置、部署相关会用到
+# 项目名称，必填，唯一，简洁太长，由英文、数字、-、_组成，不能有其他字符
+# 后续作为docker image、helm chart的名称，yaml配置部署相关会用到
 name: java-project
-# 项目版本号，遵循 Semver 规范 (https://semver.org) -> 主版本号.次版本号.修订号 ，docker image tag、yaml配置
+# 项目版本号，必填，遵循 Semver 规范 (https://semver.org) -> 主版本号.次版本号.修订号
+# 将作为docker image的Tag
 version: 0.0.1
-# 项目简介，唯一，docker image tag、yaml配置
+# 项目简介，必填，一句话说明，yaml配置部署相关会用到
 description: 项目简介
-# 项目语言
+# 项目语言，选填，作为元数据（metadata）配置放到相关部署yaml
 programLanguage: java
-# 项目分组，给项目分类，相同分类的项目docker image会放在同一个分组下
+# 项目分组，选填，harbor里面的项目名称，给docker image归类，相同分类的项目docker image会放在一起
+# 所有分类：查看harbor上的项目列表
+# 新增分类：去harbor上新建项目
+# harbor: http://registry.youpin-k8s.net
 group: java-repos
 # 项目构建流程
 # shell-spec: 标准shell构建，完全使用hook来组装流程
 # php-spec: 标准php构建，php-fpm + nginx -> docker
-# java-spec: 标准java构建，java-jar -> docker
-# web-spec: 标准web构建，nodejs -> dist
-pipeline: shell-spec
+# java-spec: 标准java构建，java -> jar -> docker
+# web-spec: 标准web构建，nodejs -> dist -> docker
+pipeline: web-spec
 # 用于build项目的docker镜像
 buildImage: maven:3.6-openjdk-11
 # 安装依赖命令
 installCommand: npm install --registry=https://registry.npmmirror.com
 # build 命令
-buildCommand: mvn clean package -Dfile.encoding=UTF-8 -DskipTests=true
+buildCommand: npm run build
 # Hook，直接执行 shell，用来扩展增强构建流程
 pipelineHook:
   buildBefore: |
