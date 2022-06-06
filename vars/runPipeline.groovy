@@ -35,7 +35,10 @@ def call() {
     // =========================================================================
 
 
-    stage('Load Env') {
+    stage('Checkout') {
+        // 清除工作区
+        cleanWs()
+
         def workspaceExists = fileExists workspace
         if (!workspaceExists) {
             checkout scm
