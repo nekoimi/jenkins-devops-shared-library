@@ -21,4 +21,5 @@ final class PipelineEnv {
     public static final def JavaSpec = "java-spec"
     public static final def GoSpec = "go-spec"
     public static final def BcsSpec = "bcs-spec"
+    public static final def BuildImage = "build-image"
 }

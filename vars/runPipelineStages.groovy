@@ -2,6 +2,7 @@ import com.yoyohr.*
 import com.yoyohr.environment.PipelineEnv
 
 import static com.yoyohr.environment.PipelineEnv.*
+
 /**
  * <p>pipelineRunner</p>
  *
@@ -13,6 +14,7 @@ def call(yamlConf) {
 
     echo "Using build: ${pgroup}"
 
+    def isBuildImage = false
     def pipeline = null
     switch (pgroup) {
         case ShellSpec:
@@ -33,6 +35,8 @@ def call(yamlConf) {
         case BcsSpec:
             pipeline = new bscSpecPipeline()
             break
+        case BuildImage:
+            isBuildImage = true
         default:
             pipeline = new shellSpecPipeline()
             break
@@ -41,60 +45,72 @@ def call(yamlConf) {
     // Do steps
     ///////////////////////////////////////////////////////////////////////////////////
 
-    stage('Project Build') {
-        pipeline.build(yamlConf)
-    }
+    if (isBuildImage) {
+        stage('Build And Push Image') {
+            runHook(yamlConf, "dockerBefore", "")
 
-    stage('Unit Testing') {
-        pipeline.unitTesting(yamlConf)
-    }
+            dockerBuildAndPush(yamlConf)
 
-    stage('Build And Push Image') {
-        runHook(yamlConf, "dockerBefore", "")
+            runHook(yamlConf, "dockerAfter", "")
+        }
+    } else {
 
-        dockerBuildAndPush(yamlConf)
+        stage('Project Build') {
+            pipeline.build(yamlConf)
+        }
 
-        runHook(yamlConf, "dockerAfter", "")
-    }
+        stage('Unit Testing') {
+            pipeline.unitTesting(yamlConf)
+        }
 
-    stage('Helm Chart') {
-        if ("${MY_BUILD_ENV}" == PipelineEnv.BuildTest) {
-            switch (pgroup) {
-                case WebSpec:
-                    helmChart(yamlConf, "template-web-spec")
-                    break
-                case PhpSpec:
-                case JavaSpec:
-                case GoSpec:
-                    helmChart(yamlConf, "template-svc-spec")
-                    break
-                case BcsSpec:
-                    helmChart(yamlConf, "template-bcs-spec")
-                    break
-                default:
-                    helmChart(yamlConf, "")
-                    break
+        stage('Build And Push Image') {
+            runHook(yamlConf, "dockerBefore", "")
+
+            dockerBuildAndPush(yamlConf)
+
+            runHook(yamlConf, "dockerAfter", "")
+        }
+
+        stage('Helm Chart') {
+            if ("${MY_BUILD_ENV}" == PipelineEnv.BuildTest) {
+                switch (pgroup) {
+                    case WebSpec:
+                        helmChart(yamlConf, "template-web-spec")
+                        break
+                    case PhpSpec:
+                    case JavaSpec:
+                    case GoSpec:
+                        helmChart(yamlConf, "template-svc-spec")
+                        break
+                    case BcsSpec:
+                        helmChart(yamlConf, "template-bcs-spec")
+                        break
+                    default:
+                        helmChart(yamlConf, "")
+                        break
+                }
+            }
+        }
+
+        stage('Deploy To Kubernetes') {
+            runHook(yamlConf, "deployBefore", "")
+
+            if ("${MY_BUILD_ENV}" == PipelineEnv.BuildTest) {
+                deployTestToKubernetes()
+            }
+
+            if ("${MY_BUILD_ENV}" == PipelineEnv.BuildRelease) {
+                pipeline.deployRelease(yamlConf)
+            }
+
+            runHook(yamlConf, "deployAfter", "")
+        }
+
+        stage('Helm Testing') {
+            if ("${MY_BUILD_ENV}" == PipelineEnv.BuildTest) {
+                helmTesting(yamlConf)
             }
         }
     }
 
-    stage('Deploy To Kubernetes') {
-        runHook(yamlConf, "deployBefore", "")
-
-        if ("${MY_BUILD_ENV}" == PipelineEnv.BuildTest) {
-            deployTestToKubernetes()
-        }
-
-        if ("${MY_BUILD_ENV}" == PipelineEnv.BuildRelease) {
-            pipeline.deployRelease(yamlConf)
-        }
-
-        runHook(yamlConf, "deployAfter", "")
-    }
-
-    stage('Helm Testing') {
-        if ("${MY_BUILD_ENV}" == PipelineEnv.BuildTest) {
-            helmTesting(yamlConf)
-        }
-    }
 }
