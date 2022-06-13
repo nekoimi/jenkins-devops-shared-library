@@ -21,7 +21,7 @@ def build(yamlConf) {
         def installCommand = dataGet(yamlConf, "installCommand")
         def buildCommand = dataGet(yamlConf, "buildCommand")
         // commandExec
-        def commandExec = "docker run --rm -w /workspace -v ${MY_PWD}:/workspace ${buildImage}"
+        def commandExec = "docker run --rm -w /workspace -v /root/.go:/root/.go -v ${MY_PWD}:/workspace ${buildImage}"
 
         runHook(yamlConf, "buildBefore", commandExec)
 
