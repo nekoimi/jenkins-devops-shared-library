@@ -1,5 +1,6 @@
 #!/usr/bin/groovy
 import com.yoyohr.environment.PipelineEnv
+
 /**
  * <p>build</p>
  *
@@ -18,12 +19,17 @@ def call() {
     def k8sCredential = "k8sCredential"
     // k8s api server host
     def k8sHost = "192.168.2.209"
-    // 当前工作控件
+    // 当前工作空间
     def workspace = "${env.workspace}"
     // 任务名称
     def jobName = "${env.JOB_NAME}"
     // 任务 Build ID
     def buildId = "${env.BUILD_ID}"
+    // 根目录空间
+    def rootWorkspace = workspace.toString().replaceAll(jobName, "")
+    if (rootWorkspace.endsWith("/")) {
+        rootWorkspace = rootWorkspace.substring(0, rootWorkspace.length() - 1)
+    }
     // 当前项目在宿主机目录，用来 docker in docker 时 volume 映射
     def myPwd = "/home/nfs/jenkins/data/jenkins_home/workspace/${jobName}"
     // 项目信息及构建配置
@@ -92,6 +98,7 @@ def call() {
 
         // Run with environment
         withEnv([
+                "ROOT_WORKSPACE=${rootWorkspace}",
                 "MY_WORKSPACE=${workspace}",
                 "MY_JOB_NAME=${jobName}",
                 "MY_BUILD_ID=${buildId}",
