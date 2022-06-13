@@ -20,9 +20,13 @@ def call(yamlConf, buildResult, defaultNameOverride) {
             path = path.toString().substring(0, path.toString().length() - 1)
         }
         if (stringIsEmpty(nameOverride)) {
-            buildResultCopyToPath(buildResult, defaultNameOverride, path)
+            syncInFileLock(path, {
+                buildResultCopyToPath(buildResult, defaultNameOverride, path)
+            })
         } else {
-            buildResultCopyToPath(buildResult, nameOverride, path)
+            syncInFileLock(path, {
+                buildResultCopyToPath(buildResult, nameOverride, path)
+            })
         }
     }
 
@@ -33,9 +37,13 @@ def call(yamlConf, buildResult, defaultNameOverride) {
             branch = "master"
         }
         if (stringIsEmpty(nameOverride)) {
-            doBuildResultCopyToGit(buildResult, git, branch, defaultNameOverride)
+            syncInFileLock(git, {
+                doBuildResultCopyToGit(buildResult, git, branch, defaultNameOverride)
+            })
         } else {
-            doBuildResultCopyToGit(buildResult, git, branch, nameOverride)
+            syncInFileLock(git, {
+                doBuildResultCopyToGit(buildResult, git, branch, nameOverride)
+            })
         }
     }
 }

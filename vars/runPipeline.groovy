@@ -26,9 +26,9 @@ def call() {
     // 任务 Build ID
     def buildId = "${env.BUILD_ID}"
     // 根目录空间
-    def rootWorkspace = workspace.toString().replaceAll(jobName, "")
-    if (rootWorkspace.endsWith("/")) {
-        rootWorkspace = rootWorkspace.substring(0, rootWorkspace.length() - 1)
+    def baseWorkspace = workspace.toString().replaceAll(jobName, "")
+    if (baseWorkspace.endsWith("/")) {
+        baseWorkspace = baseWorkspace.substring(0, baseWorkspace.length() - 1)
     }
     // 当前项目在宿主机目录，用来 docker in docker 时 volume 映射
     def myPwd = "/home/nfs/jenkins/data/jenkins_home/workspace/${jobName}"
@@ -98,7 +98,7 @@ def call() {
 
         // Run with environment
         withEnv([
-                "ROOT_WORKSPACE=${rootWorkspace}",
+                "BASE_WORKSPACE=${baseWorkspace}",
                 "MY_WORKSPACE=${workspace}",
                 "MY_JOB_NAME=${jobName}",
                 "MY_BUILD_ID=${buildId}",

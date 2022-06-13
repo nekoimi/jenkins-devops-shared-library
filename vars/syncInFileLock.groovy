@@ -5,7 +5,7 @@
  */
 def call(target = 'DEFAULT', Closure execClosure) {
     def lockName = md5sum(target)
-    def lock = "${ROOT_WORKSPACE}/.${lockName}.lock"
+    def lock = "${BASE_WORKSPACE}/.${lockName}.lock"
     echo "file-lock: ${lock}"
     try {
         def unLock = fileExists lock
