@@ -37,7 +37,9 @@ def call() {
 
     stage('Checkout') {
         // 清除工作区
+        echo ">>>>>>>>>>>>>>> 初始化工作区 - START <<<<<<<<<<<<<<<<"
         cleanWs()
+        echo ">>>>>>>>>>>>>>> 初始化工作区 - END <<<<<<<<<<<<<<<<"
 
         def workspaceExists = fileExists workspace
         if (!workspaceExists) {
@@ -124,7 +126,9 @@ def call() {
 //            }
 
             finally {
+                echo ">>>>>>>>>>>>>>> 清除工作区 - START <<<<<<<<<<<<<<<<"
                 cleanWs()
+                echo ">>>>>>>>>>>>>>> 清除工作区 - END <<<<<<<<<<<<<<<<"
             }
         }
     }
