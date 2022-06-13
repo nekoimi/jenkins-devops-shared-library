@@ -108,7 +108,9 @@ EOF
 }
 
 if [ -f "${k8sValueYaml}" ]; then
-    git clone ${MY_GIT_HELM_CHARTS_URL} helm-charts && ls -l helm-charts
+    git clone ${MY_GIT_HELM_CHARTS_URL} helm-charts
+
+    ls -l helm-charts
     
     if [ ! -e "${MY_WORKSPACE}/helm-charts/${projectName}" ]; then
         createProjectChart
