@@ -19,12 +19,25 @@ group: java-repos
 # java-spec: 标准java构建，java -> jar -> docker
 # web-spec: 标准web构建，nodejs -> dist -> docker
 pipeline: web-spec
-# 用于build项目的docker镜像
-buildImage: maven:3.6-openjdk-11
-# 安装依赖命令
+
+# 项目构建配置
+build:
+  # 用于build项目的docker镜像
+  image: node:18.0-alpine3.15
+  # 命令列表，使用 {buildImage} 来执行
+  commands:
+    - npm install --registry=https://registry.npmmirror.com
+    - npm run build
+    - npm run test
+
+# 用于build项目的docker镜像 (不推荐)
+buildImage: node:18.0-alpine3.15
+# 安装依赖命令 (不推荐)
 installCommand: npm install --registry=https://registry.npmmirror.com
-# build 命令
+# build 命令 (不推荐)
 buildCommand: npm run build
+
+
 # Hook，直接执行 shell，用来扩展增强构建流程
 pipelineHook:
   buildBefore: |
@@ -39,6 +52,8 @@ pipelineHook:
     echo 'hook:deployBefore'
   deployAfter: |
     echo 'hook:deployAfter'
+
+
 # 测试环境构建结果Copy
 testCopy:
   # 构建结果重命名，默认与name相同

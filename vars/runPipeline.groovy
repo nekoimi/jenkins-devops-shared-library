@@ -1,5 +1,6 @@
 #!/usr/bin/groovy
 import com.yoyohr.environment.PipelineEnv
+import com.yoyohr.utils.YamlUtils
 
 /**
  * <p>build</p>
@@ -75,17 +76,19 @@ def call() {
         }
         if (exists) {
             yamlConf = readYaml file: "${projectYaml}"
-            projectGroup = dataGet(yamlConf, "group")
-            projectName = dataGet(yamlConf, "name")
-            projectVersion = dataGet(yamlConf, "version")
-            projectDescription = dataGet(yamlConf, "description")
+            projectGroup = YamlUtils.get(yamlConf, "group")
+            projectName = YamlUtils.get(yamlConf, "name")
+            projectVersion = YamlUtils.get(yamlConf, "version")
+            projectDescription = YamlUtils.get(yamlConf, "description")
             def log = ""
             yamlConf.each { k, v ->
                 log = log.concat("${k} -> ${v}\n")
             }
             notice('YamlConf', log)
         } else {
-            noticeWarning('project.yaml does not exists!')
+            sh """
+echo 'project.yaml does not exists!' && exit 1
+"""
         }
 
         // Docker image
@@ -129,7 +132,7 @@ def call() {
             }
 
 //            catch (Exception e) {
-//                noticeWarning(e.message)
+//                println(e.message)
 //            }
 
             finally {

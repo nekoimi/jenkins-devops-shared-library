@@ -1,3 +1,6 @@
+import com.yoyohr.utils.StringUtils
+import com.yoyohr.utils.YamlUtils
+
 /**
  * <p>buildResultCopy</p>
  *
@@ -12,14 +15,14 @@ def call(yamlConf, buildResult, defaultNameOverride) {
         buildResult = buildResult.toString().substring(0, buildResult.toString().length() - 1)
     }
 
-    def nameOverride = dataGet(yamlConf, "${MY_BUILD_ENV}Copy.nameOverride")
+    def nameOverride = YamlUtils.get(yamlConf, "${MY_BUILD_ENV}Copy.nameOverride")
 
-    def path = dataGet(yamlConf, "${MY_BUILD_ENV}Copy.path")
-    if (stringIsNotEmpty(path)) {
+    def path = YamlUtils.get(yamlConf, "${MY_BUILD_ENV}Copy.path")
+    if (StringUtils.isNotEmpty(path)) {
         if (path.toString().endsWith("/")) {
             path = path.toString().substring(0, path.toString().length() - 1)
         }
-        if (stringIsEmpty(nameOverride)) {
+        if (StringUtils.isEmpty(nameOverride)) {
             syncInFileLock(path, {
                 buildResultCopyToPath(buildResult, defaultNameOverride, path)
             })
@@ -30,13 +33,13 @@ def call(yamlConf, buildResult, defaultNameOverride) {
         }
     }
 
-    def git = dataGet(yamlConf, "${MY_BUILD_ENV}Copy.git")
-    def branch = dataGet(yamlConf, "${MY_BUILD_ENV}Copy.branch")
-    if (stringIsNotEmpty(git)) {
-        if (stringIsEmpty(branch)) {
+    def git = YamlUtils.get(yamlConf, "${MY_BUILD_ENV}Copy.git")
+    def branch = YamlUtils.get(yamlConf, "${MY_BUILD_ENV}Copy.branch")
+    if (StringUtils.isNotEmpty(git)) {
+        if (StringUtils.isEmpty(branch)) {
             branch = "master"
         }
-        if (stringIsEmpty(nameOverride)) {
+        if (StringUtils.isEmpty(nameOverride)) {
             syncInFileLock(git, {
                 doBuildResultCopyToGit(buildResult, git, branch, defaultNameOverride)
             })

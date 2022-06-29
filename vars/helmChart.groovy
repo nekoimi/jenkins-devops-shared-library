@@ -1,3 +1,5 @@
+import com.yoyohr.utils.YamlUtils
+
 /**
  * <p>helmChart</p>
  *
@@ -11,7 +13,7 @@ def call(yamlConf, template) {
 }
 
 def helmChart(yamlConf, template) {
-    def programLanguage = dataGet(yamlConf, "programLanguage")
+    def programLanguage = YamlUtils.get(yamlConf, "programLanguage")
     def projectName = "${MY_PROJECT_NAME}"
     def projectVersion = "${MY_PROJECT_VERSION}"
     def projectDescription = "${MY_PROJECT_DESCRIPTION}"

@@ -5,47 +5,8 @@ package com.yoyohr
  * @author nekoimi 2022/05/29
  */
 
-def doBuild(command) {
-    sh """
-bash -ex;
-
-\${MY_COMMAND_EXEC} ${command}
-
-ls -l
-"""
-}
-
 def build(yamlConf) {
-    def buildImage = dataGet(yamlConf, "buildImage")
-    if (stringIsNotEmpty(buildImage)) {
-        def installCommand = dataGet(yamlConf, "installCommand")
-        def buildCommand = dataGet(yamlConf, "buildCommand")
-        // commandExec
-        def commandExec = "docker run --rm -w /workspace -v /root/.go:/root/.go -v ${MY_PWD}:/workspace ${buildImage}"
-
-        runHook(yamlConf, "buildBefore", commandExec)
-
-        if (stringIsNotEmpty(installCommand)) {
-            withEnv([
-                    "MY_COMMAND_EXEC=${commandExec}"
-            ]) {
-                doBuild(installCommand)
-            }
-        }
-
-        if (stringIsNotEmpty(buildCommand)) {
-            withEnv([
-                    "MY_COMMAND_EXEC=${commandExec}"
-            ]) {
-                doBuild(buildCommand)
-            }
-        }
-
-        runHook(yamlConf, "buildAfter", commandExec)
-    } else {
-        runHook(yamlConf, "buildBefore", "")
-        runHook(yamlConf, "buildAfter", "")
-    }
+    buildWithCache(yamlConf, "-v /root/.go:/root/.go", {})
 }
 
 def unitTesting(yamlConf) {

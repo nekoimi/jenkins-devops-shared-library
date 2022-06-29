@@ -1,3 +1,6 @@
+import com.yoyohr.utils.StringUtils
+import com.yoyohr.utils.YamlUtils
+
 /**
  * <p>runHookBefore</p>
  *
@@ -5,8 +8,8 @@
  */
 
 def call(yamlConf, hook, commandExec) {
-    def hookCommand = dataGet(yamlConf, "pipelineHook.${hook}")
-    if (stringIsNotEmpty(hookCommand)) {
+    def hookCommand = YamlUtils.get(yamlConf, "pipelineHook.${hook}")
+    if (StringUtils.isNotEmpty(hookCommand)) {
         withEnv([
                 "MY_COMMAND_EXEC=${commandExec}"
         ]) {

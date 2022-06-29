@@ -1,5 +1,6 @@
 import com.yoyohr.*
 import com.yoyohr.environment.PipelineEnv
+import com.yoyohr.utils.YamlUtils
 
 import static com.yoyohr.environment.PipelineEnv.*
 
@@ -10,7 +11,7 @@ import static com.yoyohr.environment.PipelineEnv.*
  */
 
 def call(yamlConf) {
-    def pgroup = dataGet(yamlConf, "pipeline")
+    def pgroup = YamlUtils.get(yamlConf, "pipeline")
 
     echo "Using build: ${pgroup}"
 

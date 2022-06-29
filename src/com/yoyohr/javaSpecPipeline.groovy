@@ -5,14 +5,9 @@ package com.yoyohr
  * @author nekoimi 2022/05/29
  */
 
-def doBuild(command) {
-    sh """
-bash -ex;
-
-\${MY_COMMAND_EXEC} ${command}
-
-ls -l target
-
+def build(yamlConf) {
+    buildWithCache(yamlConf, "-v /root/.m2:/root/.m2", {
+        sh """
 jarName=\$(ls target | grep .jar\$ | sed s/[[:space:]]//g)
 
 if [ ! -z \$jarName ]; then
@@ -31,30 +26,7 @@ fi
 
 ls -l target
 """
-}
-
-def build(yamlConf) {
-    def buildImage = dataGet(yamlConf, "buildImage")
-    if (stringIsNotEmpty(buildImage)) {
-        def buildCommand = dataGet(yamlConf, "buildCommand")
-        // commandExec
-        def commandExec = "docker run --rm -w /workspace -v /root/.m2:/root/.m2 -v ${MY_PWD}:/workspace ${buildImage}"
-
-        runHook(yamlConf, "buildBefore", commandExec)
-
-        if (stringIsNotEmpty(buildCommand)) {
-            withEnv([
-                    "MY_COMMAND_EXEC=${commandExec}"
-            ]) {
-                doBuild(buildCommand)
-            }
-        }
-
-        runHook(yamlConf, "buildAfter", commandExec)
-    } else {
-        runHook(yamlConf, "buildBefore", "")
-        runHook(yamlConf, "buildAfter", "")
-    }
+    })
 
     buildResultCopy(yamlConf, "target/app.jar", "${MY_PROJECT_NAME}.jar")
     buildResultCopy(yamlConf, "target/app.war", "${MY_PROJECT_NAME}.war")
