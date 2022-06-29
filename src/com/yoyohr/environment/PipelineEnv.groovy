@@ -15,6 +15,7 @@ final class PipelineEnv {
     /**
      * 构建分组
      */
+    public static final def SvcSpec = "svc-spec"
     public static final def ShellSpec = "shell-spec"
     public static final def WebSpec = "web-spec"
     public static final def PhpSpec = "php-spec"

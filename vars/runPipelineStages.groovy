@@ -17,6 +17,9 @@ def call(yamlConf) {
     def isBuildImage = false
     def pipeline = null
     switch (pgroup) {
+        case SvcSpec:
+            pipeline = new svcSpecPipeline()
+            break
         case ShellSpec:
             pipeline = new shellSpecPipeline()
             break
@@ -77,6 +80,7 @@ def call(yamlConf) {
                     case WebSpec:
                         helmChart(yamlConf, "template-web-spec")
                         break
+                    case SvcSpec:
                     case PhpSpec:
                     case JavaSpec:
                     case GoSpec:
