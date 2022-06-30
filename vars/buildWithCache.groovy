@@ -20,14 +20,10 @@ def call(yamlConf, dockerVolumeOpts, Closure buildCallback) {
 
         def commands = YamlUtils.get(yamlConf, "build.commands")
 
-        println(commands)
-        println(commands.toString())
-        println(commands.getClass())
-
         runHook(yamlConf, "buildBefore", commandExec)
 
         for (command in commands) {
-            println("exec-command: " + command)
+            echo "exec-command: ${command}"
 
             if (StringUtils.isNotEmpty(command)) {
                 withEnv([
