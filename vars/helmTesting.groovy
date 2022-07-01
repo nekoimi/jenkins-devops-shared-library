@@ -7,7 +7,7 @@
 def call(yamlConf) {
     def apiServerMntPath = "/mnt"
     def server = [:]
-    server.name = "api-server"
+    server.name = "k8s-api-server"
     server.host = "${MY_K8S_HOST}"
     server.allowAnyHosts= true
     withCredentials([sshUserPrivateKey(
