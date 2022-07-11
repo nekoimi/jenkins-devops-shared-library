@@ -1,6 +1,6 @@
-package com.yoyohr
+package com.nekoimi
 /**
- * <p>bcs项目标准构建流程</p>
+ * <p>完全使用外部Shell脚本的构建流程</p>
  *
  * @author nekoimi 2022/05/29
  */

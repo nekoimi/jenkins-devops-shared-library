@@ -3,8 +3,8 @@
  *
  * @author nekoimi 2022/06/04
  */
-import com.yoyohr.utils.StringUtils
-import com.yoyohr.utils.YamlUtils
+import com.nekoimi.utils.StringUtils
+import com.nekoimi.utils.YamlUtils
 
 def call(yamlConf, dockerVolumeOpts, Closure buildCallback) {
     buildV1(yamlConf, dockerVolumeOpts, buildCallback)

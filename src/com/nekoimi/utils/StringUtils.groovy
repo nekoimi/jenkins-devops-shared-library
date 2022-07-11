@@ -1,4 +1,4 @@
-package com.yoyohr.utils
+package com.nekoimi.utils
 
 /**
  * <p>StringUtils</p>

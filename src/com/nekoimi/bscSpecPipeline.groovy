@@ -1,14 +1,13 @@
-package com.yoyohr
+package com.nekoimi
 /**
- * <p>web项目标准构建流程</p>
+ * <p>bcs项目标准构建流程</p>
  *
  * @author nekoimi 2022/05/29
  */
 
 def build(yamlConf) {
-    buildWithCache(yamlConf, "-v /root/.npm:/root/.npm", {})
-
-    buildResultCopy(yamlConf, "dist", "${MY_PROJECT_NAME}")
+    runHook(yamlConf, "buildBefore", "")
+    runHook(yamlConf, "buildAfter", "")
 }
 
 def unitTesting(yamlConf) {

@@ -1,4 +1,4 @@
-package com.yoyohr
+package com.nekoimi
 /**
  * <p>java项目标准构建流程</p>
  *

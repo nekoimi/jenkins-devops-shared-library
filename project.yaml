@@ -11,13 +11,17 @@ programLanguage: java
 # 项目分组，选填，harbor里面的项目名称，给docker image归类，相同分类的项目docker image会放在一起
 # 所有分类：查看harbor上的项目列表
 # 新增分类：去harbor上新建项目
-# harbor: http://registry.youpin-k8s.net
+# harbor: http://registry.lan-network.net
 group: java-repos
 # 项目构建流程
+# build-image: 构建docker image, dockerfile -> image -> push dockerhub
 # shell-spec: 标准shell构建，完全使用hook来组装流程
-# php-spec: 标准php构建，php-fpm + nginx -> docker
-# java-spec: 标准java构建，java -> jar -> docker
-# web-spec: 标准web构建，nodejs -> dist -> docker
+# svc-spec: 通用后端项目构建，dockerfile -> image -> push dockerhub -> helm deploy to k8s
+# web-spec: 标准前端项目构建，nodejs -> dist + dockerfile -> image -> push dockerhub -> helm deploy to k8s
+# 后端扩展：
+# php-spec: 标准php构建，composer + dockerfile -> image -> push dockerhub -> helm deploy to k8s
+# java-spec: 标准java构建，maven -> jar + dockerfile -> image -> push dockerhub -> helm deploy to k8s
+# go-spec: 标准go构建，go -> binary + dockerfile -> image -> push dockerhub -> helm deploy to k8s
 pipeline: web-spec
 
 # 项目构建配置
@@ -29,13 +33,6 @@ build:
     - npm install --registry=https://registry.npmmirror.com
     - npm run build
     - npm run test
-
-# 用于build项目的docker镜像 (不推荐)
-buildImage: node:18.0-alpine3.15
-# 安装依赖命令 (不推荐)
-installCommand: npm install --registry=https://registry.npmmirror.com
-# build 命令 (不推荐)
-buildCommand: npm run build
 
 
 # Hook，直接执行 shell，用来扩展增强构建流程

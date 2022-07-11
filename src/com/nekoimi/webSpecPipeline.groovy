@@ -1,12 +1,14 @@
-package com.yoyohr
+package com.nekoimi
 /**
- * <p>php项目标准构建流程</p>
+ * <p>web项目标准构建流程</p>
  *
  * @author nekoimi 2022/05/29
  */
 
 def build(yamlConf) {
-    buildWithCache(yamlConf, "-v /root/.composer:/root/.composer", {})
+    buildWithCache(yamlConf, "-v /root/.npm:/root/.npm", {})
+
+    buildResultCopy(yamlConf, "dist", "${MY_PROJECT_NAME}")
 }
 
 def unitTesting(yamlConf) {

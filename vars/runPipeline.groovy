@@ -1,6 +1,6 @@
 #!/usr/bin/groovy
-import com.yoyohr.environment.PipelineEnv
-import com.yoyohr.utils.YamlUtils
+import com.nekoimi.environment.PipelineEnv
+import com.nekoimi.utils.YamlUtils
 
 /**
  * <p>build</p>
@@ -11,15 +11,15 @@ import com.yoyohr.utils.YamlUtils
 def call() {
     // =========================================================================
     // jenkins凭据ID，git账号
-    def gitCredentialId = "gitlab"
+    def gitCredentialId = "${env.GITLAB_CREDENTIAL}"
     // jenkins凭据ID，dockerhub 账号
-    def dockerRegistryId = "dockerhub"
+    def dockerRegistryId = "${env.DOCKER_CREDENTIAL}"
     // docker registry 地址
-    def dockerRegistry = "http://registry.youpin-k8s.net"
+    def dockerRegistry = "${env.DOCKER_REGISTRY}"
     // k8s api server 证书ID，证书生成：ssh-keygen -t rsa -b 4096
-    def k8sCredential = "k8sCredential"
+    def k8sCredential = "${env.K8S_API_SERVER_CREDENTIAL}"
     // k8s api server host
-    def k8sHost = "192.168.2.209"
+    def k8sHost = "${env.K8S_API_SERVER_HOST}"
     // 当前工作空间
     def workspace = "${env.workspace}"
     // 任务名称
@@ -32,13 +32,13 @@ def call() {
         baseWorkspace = baseWorkspace.substring(0, baseWorkspace.length() - 1)
     }
     // 当前项目在宿主机目录，用来 docker in docker 时 volume 映射
-    def myPwd = "/home/nfs/jenkins/data/jenkins_home/workspace/${jobName}"
-    // 项目信息及构建配置
-    def projectYaml = "project.yaml"
+    def myPwd = "${env.JENKINS_HOME_VOLUME}/workspace/${jobName}"
     // 项目构建环境
     def buildEnv = "$params.BUILD_ENV"
     // Git helm-charts 仓库地址，专门存放管理helm-charts的仓库地址
-    def gitHelmChartsUrl = "http://code-base.yoyohr.com/kubernetes/helm-charts.git"
+    def gitHelmChartsUrl = "${env.HELM_CHART_REPOSITORY}"
+    // 项目信息及构建配置
+    def projectYaml = "project.yaml"
     // =========================================================================
 
 
