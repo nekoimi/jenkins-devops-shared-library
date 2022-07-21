@@ -33,7 +33,17 @@ build:
     - npm install --registry=https://registry.npmmirror.com
     - npm run build
     - npm run test
+  # docker镜像推送
+  push:
+    - name: Push test
+      buildEnv: test
+      repository: registry.cn-shenzhen.aliyuncs.com/demo/test-web
+      tag: test-web-push-test
 
+    - name: Push release
+      buildEnv: release
+      repository: registry.cn-shenzhen.aliyuncs.com/demo/test-web
+      tag: test-web-push-release
 
 # Hook，直接执行 shell，用来扩展增强构建流程
 pipelineHook:
